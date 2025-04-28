@@ -1,0 +1,41 @@
+{
+  "project": "discord-bot-mockery",
+  "language": "TypeScript",
+  "framework": "discord.js v14",
+  "architecture": {
+    "style": "modular",
+    "structure": [
+      "src/commands/",
+      "src/events/",
+      "src/services/",
+      "src/utils/",
+      "src/config/"
+    ]
+  },
+  "code_style": {
+    "async_await": true,
+    "naming_convention": "camelCase",
+    "functions": "prefer arrow functions",
+    "file_size": "small and focused on single responsibility",
+    "readability_priority": true,
+    "comments": "only where necessary to explain complex logic",
+    "typescript_typing": "strong typing, avoid 'any'"
+  },
+  "error_handling": {
+    "use_try_catch": true,
+    "error_logging": "use centralized logger utility"
+  },
+  "tools": {
+    "environment_variables": "use dotenv",
+    "formatting": "ESLint and Prettier configured"
+  },
+  "response_style": {
+    "completeness": "generate full code examples with filenames and paths",
+    "chunking": "if large, send project skeleton first and detail next",
+    "explanations": "short and direct, only when necessary"
+  },
+  "communication": {
+    "developer_level": "assume experienced developer",
+    "avoid_basic_explanations": true
+  }
+}
