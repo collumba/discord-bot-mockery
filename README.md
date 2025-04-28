@@ -1,3 +1,78 @@
+# Discord Bot Mockery
+
+Bot de Discord criado em TypeScript usando discord.js v14 com arquitetura modularizada.
+
+## Estrutura do Projeto
+
+```
+src/
+├── commands/     # Comandos do bot (slash commands)
+├── events/       # Eventos do Discord (ready, messageCreate, etc)
+├── services/     # Serviços e handlers (comandos, eventos, etc)
+├── utils/        # Utilitários (logger, helpers, etc)
+├── config/       # Configurações (client, etc)
+└── bot.ts        # Ponto de entrada do bot
+```
+
+## Pré-requisitos
+
+- Node.js 16.9.0 ou superior
+- NPM ou Yarn
+- Token de bot do Discord
+
+## Instalação
+
+1. Clone o repositório
+```bash
+git clone https://github.com/seu-usuario/discord-bot-mockery.git
+cd discord-bot-mockery
+```
+
+2. Instale as dependências
+```bash
+npm install
+```
+
+3. Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+```
+DISCORD_TOKEN=seu_token_aqui
+DISCORD_CLIENT_ID=seu_client_id_aqui
+```
+
+## Comandos
+
+- `npm run build`: Compila o TypeScript
+- `npm run start`: Inicia o bot a partir do código compilado
+- `npm run dev`: Inicia o bot usando ts-node (desenvolvimento)
+- `npm run watch`: Inicia o bot em modo de observação (reinicia quando há mudanças)
+- `npm run lint`: Executa o ESLint para verificar o código
+
+## Desenvolvimento
+
+### Adicionando Comandos
+
+Para adicionar um novo comando, crie um arquivo em `src/commands/` seguindo o formato existente:
+
+```typescript
+import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+
+const command = {
+  data: new SlashCommandBuilder()
+    .setName('nome-do-comando')
+    .setDescription('Descrição do comando'),
+    
+  async execute(interaction: CommandInteraction) {
+    await interaction.reply('Resposta do comando');
+  }
+};
+
+export default command;
+```
+
+### Adicionando Eventos
+
+Para adicionar um novo evento, crie um arquivo em `src/events/` seguindo o formato existente.
+
 # discord-bot-mockery
 **Documento de Especificação do Projeto**
 
