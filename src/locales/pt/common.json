@@ -92,6 +92,39 @@
         "Com essa mira, era melhor jogar adivinhação."
       ]
     },
+    "callto": {
+      "play": {
+        "name": "callto-play",
+        "description": "Convida todos para jogar com uma mensagem aleatória",
+        "success": "✅ Convite para jogar enviado com sucesso!",
+        "error": "❌ Erro ao enviar convite para jogar. Tente novamente mais tarde."
+      },
+      "chat": {
+        "name": "callto-chat",
+        "description": "Convida todos para conversar com uma mensagem aleatória",
+        "success": "✅ Convite para conversar enviado com sucesso!",
+        "error": "❌ Erro ao enviar convite para conversar. Tente novamente mais tarde."
+      },
+      "event": {
+        "name": "callto-event",
+        "description": "Convida todos para um evento com uma mensagem aleatória",
+        "success": "✅ Convite para o evento enviado com sucesso!",
+        "error": "❌ Erro ao enviar convite para o evento. Tente novamente mais tarde."
+      },
+      "custom": {
+        "name": "callto-custom",
+        "description": "Envia uma mensagem de call to action personalizada",
+        "option_text": "Texto da mensagem personalizada",
+        "success": "✅ Mensagem personalizada enviada com sucesso!",
+        "error": "❌ Erro ao enviar mensagem personalizada. Tente novamente mais tarde."
+      },
+      "titles": {
+        "play": "🎮 Let's Play!",
+        "chat": "💬 Let's Chat!",
+        "event": "🏆 Event Time!",
+        "custom": "📣 Attention!"
+      }
+    },
     "ping": {
       "description": "Responde com Pong! 🏓",
       "response": "Pong! 🏓"
@@ -156,7 +189,7 @@
     },
     "messageRoaster": {
       "LONG_MESSAGE": [
-        "Irmão escreveu um romance inteiro para isso? 😂",
+        "Bro wrote an entire novel for what? 😂",
         "Tá escrevendo TCC no Discord? 📚",
         "Esse textão é maior que meu tempo de respawn 💀",
         "Nem tutorial de crafting é tão longo assim",
@@ -164,7 +197,7 @@
         "Teu texto é tão longo que precisa de checkpoint no meio"
       ],
       "EMOJI_SPAM": [
-        "Está tentando invocar um chefe com todos esses emojis?",
+        "Trying to summon a boss with all those emojis?",
         "Tá farmando emoji pra comprar skin?",
         "Emoji speedrun any%?",
         "Acho que seu teclado tá com auto-emoji ativado",
@@ -180,11 +213,41 @@
         "RELAXA, NÃO É COMPETITIVO"
       ],
       "KEYBOARD_SMASH": [
+        "Someone keyboard smashed harder than a Valorant match",
         "Seu teclado pediu arrego",
         "Precisamos de um tradutor do idioma tilt aqui",
         "Morreu pro mesmo camper de novo?",
         "Acho que alguém derrubou bebida no teclado",
         "Tentou fazer combo no teclado?"
+      ]
+    },
+    "callTo": {
+      "play": [
+        "E aí, cadê os bravos do PvP?",
+        "Alguém afim de uma partidinha casual?",
+        "Quem tá on pra jogar? Os NPC do tutorial tão com saudades.",
+        "Procura-se squad que não desiste na primeira morte!",
+        "Quem tá encarando uma queue de ranked hoje?",
+        "Dizem que quem não joga hoje vai perder seu rank...",
+        "Server vazio, ping ok, inventário cheio... falta só a galera!"
+      ],
+      "chat": [
+        "Chat mais morto que meu KD.",
+        "Alguém aí tem história pra contar ou tá todo mundo AFK?",
+        "Fila de MMORPG às 3 da manhã vibes por aqui.",
+        "Esse chat tá precisando de uma buff de comunicação.",
+        "Silêncio no chat é sinal de que estão todos perdendo no jogo.",
+        "Mais quieto que lobby depois de um rage quit coletivo.",
+        "Alguém dropa emoção aí que tá em falta."
+      ],
+      "event": [
+        "Se ninguém falar nada em 5 minutos, vou começar a humilhar aleatoriamente.",
+        "Hora do evento! A premiação é não ser humilhado por mim.",
+        "Evento de hoje: quem contar a história de game mais vergonhosa ganha.",
+        "Hora do torneio! Só não sei exatamente de que, mas apareçam!",
+        "Evento surpresa! A surpresa é que não tem evento, só queria ver vocês online.",
+        "Reunião de guild: vamos discutir por que vocês são tão ruins.",
+        "Chama a galera aí que hoje tem evento especial!"
       ]
     }
   },
