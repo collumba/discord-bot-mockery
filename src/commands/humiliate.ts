@@ -73,7 +73,7 @@ export default {
     const phrase = basePhrase.replace(/{username}/g, `@${randomMember.user.username}`);
 
     const embed = new EmbedBuilder()
-      .setColor('Random')
+      .setColor(BOT_CONFIG.COLORS.DEFAULT)
       .setTitle(`${BOT_CONFIG.ICONS.HUMILIATE} ${t('commands.humiliate.title')}`)
       .setDescription(phrase)
       .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });

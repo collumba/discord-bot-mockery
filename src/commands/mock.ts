@@ -85,7 +85,7 @@ export default {
 
     // Create embed
     const embed = new EmbedBuilder()
-      .setColor('Random')
+      .setColor(BOT_CONFIG.COLORS.DEFAULT)
       .setTitle(`${BOT_CONFIG.ICONS.MOCK} ${t('commands.mock.title')}`)
       .setDescription(phrase)
       .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
@@ -113,7 +113,7 @@ export default {
         try {
           // Create achievement embed
           const achievementEmbed = new EmbedBuilder()
-            .setColor('Gold')
+            .setColor(BOT_CONFIG.COLORS.SUCCESS)
             .setTitle(t('achievements.unlocked.title'))
             .setDescription(
               t('achievements.unlocked.description', {
@@ -138,7 +138,7 @@ export default {
         try {
           // Create achievement embed
           const achievementEmbed = new EmbedBuilder()
-            .setColor('Gold')
+            .setColor(BOT_CONFIG.COLORS.SUCCESS)
             .setTitle(t('achievements.unlocked.title'))
             .setDescription(
               t('achievements.unlocked.description', {
