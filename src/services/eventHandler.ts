@@ -9,7 +9,7 @@ import logger from '../utils/logger';
 interface Event {
   name: string;
   once?: boolean;
-  execute: (client: Client, ...args: any[]) => Promise<void> | void;
+  execute: (...args: any[]) => Promise<void> | void;
 }
 
 async function loadEvents(client: Client): Promise<void> {
@@ -36,9 +36,9 @@ async function loadEvents(client: Client): Promise<void> {
 
         // Registers the event based on the 'once' property
         if (event.once) {
-          client.once(event.name, (...args) => event.execute(client, ...args));
+          client.once(event.name, (...args) => event.execute(...args));
         } else {
-          client.on(event.name, (...args) => event.execute(client, ...args));
+          client.on(event.name, (...args) => event.execute(...args));
         }
 
         logger.info(`Event loaded: ${file} [${event.name}${event.once ? ' - once' : ''}]`);

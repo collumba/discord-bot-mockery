@@ -21,7 +21,8 @@
     "comments": "only where necessary to explain complex logic",
     "typescript_typing": "strong typing, avoid 'any'",
     "code_quality": "high",
-    "code_language": "english"
+    "code_language": "english",
+    "comments_language": "english"
   },
   "error_handling": {
     "use_try_catch": true,

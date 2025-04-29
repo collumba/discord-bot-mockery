@@ -153,6 +153,40 @@
         "Mais quieto que lobby depois de um rage quit coletivo.",
         "Esse chat tá precisando de uma buff de comunicação."
       ]
+    },
+    "messageRoaster": {
+      "LONG_MESSAGE": [
+        "Bro wrote an entire novel for what? 😂",
+        "Tá escrevendo TCC no Discord? 📚",
+        "Esse textão é maior que meu tempo de respawn 💀",
+        "Nem tutorial de crafting é tão longo assim",
+        "Parei de ler na metade, igual cutscene de RPG",
+        "Teu texto é tão longo que precisa de checkpoint no meio"
+      ],
+      "EMOJI_SPAM": [
+        "Trying to summon a boss with all those emojis?",
+        "Tá farmando emoji pra comprar skin?",
+        "Emoji speedrun any%?",
+        "Acho que seu teclado tá com auto-emoji ativado",
+        "Seus emojis ocupam mais espaço que meu inventário",
+        "Parece inventário de iniciante no Minecraft"
+      ],
+      "ALL_CAPS": [
+        "CAPSLOCK gamer detected! 🎮",
+        "BAIXA O VOLUME AÍ, TÁ NO MEIO DA RAID?",
+        "ALGUÉM DEU HEADSHOT NESSE CARA",
+        "Teclado travou depois do rage quit?",
+        "MODO TRYHARD ATIVADO",
+        "RELAXA, NÃO É COMPETITIVO"
+      ],
+      "KEYBOARD_SMASH": [
+        "Someone keyboard smashed harder than a Valorant match",
+        "Seu teclado pediu arrego",
+        "Precisamos de um tradutor do idioma tilt aqui",
+        "Morreu pro mesmo camper de novo?",
+        "Acho que alguém derrubou bebida no teclado",
+        "Tentou fazer combo no teclado?"
+      ]
     }
   },
   "achievements": {
