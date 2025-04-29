@@ -1,5 +1,5 @@
 import { client } from './config/client';
-import CommandHandler from './services/commandHandler';
+import commandHandler from './services/commandHandler';
 import loadEvents from './services/eventHandler';
 
 async function main() {
@@ -8,9 +8,8 @@ async function main() {
     await loadEvents(client);
     
     // Inicializar handler de comandos
-    const commandHandler = new CommandHandler(client);
-    await commandHandler.loadCommands();
-    commandHandler.registerEvents();
+    await commandHandler.loadCommands(client);
+    commandHandler.registerCommandHandler(client);
     console.log('Comandos carregados e eventos registrados');
 
     // Login do bot usando o token do .env

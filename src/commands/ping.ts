@@ -1,13 +1,11 @@
 import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
 
-const command = {
+export default {
   data: new SlashCommandBuilder()
     .setName('ping')
     .setDescription('Responde com Pong!'),
     
   async execute(interaction: CommandInteraction) {
-    await interaction.reply({ content: 'Pong!', ephemeral: true });
+    await interaction.reply({ content: 'Pong! 🏓', ephemeral: true });
   }
-};
-
-export default command; 
+}; 
