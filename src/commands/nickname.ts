@@ -52,15 +52,12 @@ export default {
 
     const nicknames = t('commands.nickname.nicknames');
 
-    const nickname = nicknames[Math.floor(Math.random() * nicknames.length)];
+    const nicknamesArray = Array.isArray(nicknames) ? nicknames : nicknames.split('.,');
+    const nickname = nicknamesArray[Math.floor(Math.random() * nicknamesArray.length)];
 
-    const embed = new EmbedBuilder()
-      .setColor(BOT_CONFIG.COLORS.DEFAULT)
-      .setTitle(t('commands.nickname.title'))
-      .setDescription(t('commands.nickname.success', { username: user.username, nickname }))
-      .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
+    const message = t('commands.nickname.success', { username: `<@${user.id}>`, nickname });
 
-    await interaction.reply({ embeds: [embed] });
+    await interaction.reply({ content: message });
 
     // Process achievements
     try {
