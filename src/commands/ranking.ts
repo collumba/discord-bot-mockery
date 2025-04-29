@@ -1,25 +1,23 @@
-import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
-
-// Simulador de ranking (em memória)
-const fakeRanking = [
-  { username: 'Player1', vezes: 12 },
-  { username: 'Player2', vezes: 9 },
-  { username: 'Player3', vezes: 7 },
-  { username: 'Player4', vezes: 5 },
-  { username: 'Player5', vezes: 3 }
-];
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { getTopRanking } from '../services/rankingService';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('ranking')
     .setDescription('Mostra quem foi mais zoado pela Soberaninha.'),
-  
-  async execute(interaction: CommandInteraction) {
-    let msg = '**🏆 Ranking dos Mais Zoados:**\n\n';
-    fakeRanking.forEach((player, index) => {
-      msg += `#${index + 1} - ${player.username} (${player.vezes} zoações)\n`;
-    });
 
-    await interaction.reply(msg);
-  }
+  async execute(interaction: ChatInputCommandInteraction) {
+    const top = getTopRanking();
+
+    if (top.length === 0) {
+      return interaction.reply('Ainda não temos zoados suficientes! 🥲');
+    }
+
+    let reply = '**🏆 Ranking dos Mais Zoados:**\n\n';
+    for (const [userId, vezes] of top) {
+      reply += `<@${userId}> — ${vezes} zoações\n`;
+    }
+
+    await interaction.reply(reply);
+  },
 };
