@@ -227,6 +227,58 @@
         "Tentou fazer combo no teclado?"
       ]
     },
+    "presenceRoaster": {
+      "embed": {
+        "title": "🎮 Gamer Detectado: {game}!",
+        "footer": "{botName} | Só Zoando"
+      },
+      "games": {
+        "league_of_legends": [
+          "Hora de alimentar a mid lane, pelo visto.",
+          "Mais um dia, mais um ragequit após o primeiro sangue.",
+          "Deixa eu adivinhar: 'Meu time está me segurando'?",
+          "Espero que você tenha comprado RP para essa skin, porque não vai melhorar suas habilidades.",
+          "Seu CS provavelmente é menor que seu QI... e isso já é dizer alguma coisa.",
+          "Espero que você seja bom em explicar por que morreu para minions de novo."
+        ],
+        "valorant": [
+          "Mais um dia, mais um tiro na cabeça errado.",
+          "Já consigo ouvir você culpando seu ping.",
+          "Você é tão previsível que o time inimigo já está mirando em suas posições.",
+          "Sua mira é tão consistente quanto suas desculpas.",
+          "Ficar parado não é uma estratégia válida, sabia?",
+          "Deixe-me adivinhar, você é um 'suporte agressivo' que nunca planta a bomba?"
+        ],
+        "fortnite": [
+          "Construir uma torre não vai esconder sua mira ruim.",
+          "Fazer 90s não vai salvar você de suas decisões ruins.",
+          "Suas habilidades de construção são ótimas! Já o seu tiro...",
+          "Agradeça ao motorista do ônibus, porque esse é o único abate que você vai conseguir.",
+          "Bela skin! Vai ficar ótima no modo espectador onde você vai passar a maior parte do tempo.",
+          "'Ser eliminado instantaneamente' é sua estratégia principal?"
+        ],
+        "minecraft": [
+          "Minerar diretamente para baixo ainda é sua estratégia principal?",
+          "Suas construções parecem acidentes de creeper.",
+          "Até os aldeões tomam melhores decisões de vida que você.",
+          "Deixe-me adivinhar, você ainda grita quando ouve um som de caverna?",
+          "Suas engenhocas de redstone provavelmente têm mais lógica que sua gameplay.",
+          "Até os zumbis têm melhor navegação que você."
+        ],
+        "default": [
+          "Parece que você escolheu decepcionar em um novo jogo hoje.",
+          "Sua cadeira gamer não é o problema. Você é.",
+          "Levando o 'é só um jogo' a um novo nível de ruindade.",
+          "Você não precisa de internet melhor, precisa de habilidades melhores.",
+          "Suas sessões de jogo deveriam vir com aviso de gatilho.",
+          "Correndo para o fundo da tabela de classificação novamente?",
+          "Já tentou ligar e desligar sua habilidade?",
+          "Seu histórico de jogos é como seu histórico de navegação - melhor manter privado.",
+          "Até os NPCs sentem pena de você.",
+          "A tela de carregamento é o único momento em que você não está falhando."
+        ]
+      }
+    },
     "callTo": {
       "play": [
         "E aí, cadê os bravos do PvP?",

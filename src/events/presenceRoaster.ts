@@ -7,9 +7,9 @@ import {
   EmbedBuilder,
   ChannelType,
 } from 'discord.js';
-import { getRandomRoastForGame } from '../utils/gameRoastPhrases';
 import logger from '../utils/logger';
 import BOT_CONFIG from '../config/botConfig';
+import { t } from '../services/i18nService';
 
 export const name = Events.PresenceUpdate;
 export const once = false;
@@ -67,6 +67,40 @@ function cleanupCooldowns(): void {
 }
 
 /**
+ * Gets a game-specific roast from i18n
+ * @param gameName Game name to get roasts for
+ * @returns Random roast phrase for the game
+ */
+function getGameRoast(gameName: string): string {
+  const normalizedGame = gameName.toLowerCase();
+  const gameKeys = [
+    'league_of_legends',
+    'valorant',
+    'fortnite',
+    'minecraft',
+    // Add more game keys as needed
+  ];
+
+  // Check if we have specific roasts for this game
+  let translationKey = 'services.presenceRoaster.games.default';
+  for (const key of gameKeys) {
+    if (normalizedGame.includes(key) || key.includes(normalizedGame)) {
+      translationKey = `services.presenceRoaster.games.${key}`;
+      break;
+    }
+  }
+
+  // Get the roasts from i18n
+  const roastsStr = t(translationKey);
+
+  // Split by comma+dot if it's a single string (how the i18n system joins arrays)
+  const roasts = Array.isArray(roastsStr) ? roastsStr : roastsStr.split('.,');
+
+  // Get a random roast
+  return roasts[Math.floor(Math.random() * roasts.length)];
+}
+
+/**
  * Sends a roast message to the target channel
  * @param channel Target channel
  * @param username Username to roast
@@ -84,10 +118,10 @@ async function sendRoastMessage(
     // Create an embed for the roast
     const embed = new EmbedBuilder()
       .setColor(BOT_CONFIG.COLORS.DEFAULT)
-      .setTitle(`🎮 Gamer Detected: ${gameName}!`)
+      .setTitle(t('services.presenceRoaster.embed.title', { game: gameName }))
       .setDescription(`Hey **${username}**, ${roastMessage}`)
       .setFooter({
-        text: `${BOT_CONFIG.NAME} | Just Roasting`,
+        text: t('services.presenceRoaster.embed.footer', { botName: BOT_CONFIG.NAME }),
       })
       .setTimestamp();
 
@@ -167,7 +201,7 @@ export async function execute(
     }
 
     // Get a random roast message for the game
-    const roastMessage = getRandomRoastForGame(gameName);
+    const roastMessage = getGameRoast(gameName);
 
     // Get the target channel
     try {
