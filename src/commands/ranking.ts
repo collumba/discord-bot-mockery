@@ -74,7 +74,7 @@ export default {
       // Cria o embed com estilo do bot
       const embed = new EmbedBuilder()
         .setColor(BOT_CONFIG.COLORS.DEFAULT)
-        .setTitle(t('commands.ranking.embed.title'))
+        .setTitle(`${BOT_CONFIG.ICONS.RANKING} ${t('commands.ranking.embed.title')}`)
         .setDescription(rankingText)
         .setFooter({
           text: t('commands.ranking.embed.footer', { botName: BOT_CONFIG.NAME }),

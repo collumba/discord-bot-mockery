@@ -6,6 +6,7 @@ import {
 } from 'discord.js';
 import { incrementUser } from '../services/rankingService';
 import cooldownService from '../services/cooldownService';
+import { checkAndAwardAchievements } from '../services/achievementsService';
 import BOT_CONFIG from '../config/botConfig';
 import { t } from '../services/i18nService';
 
@@ -59,6 +60,14 @@ export default {
       });
     }
 
+    // Evita zoar a si mesmo
+    if (alvo.id === userId) {
+      return await interaction.reply({
+        content: t('commands.zoar.error.self_target'),
+        ephemeral: true,
+      });
+    }
+
     // Verifica se o comando está sendo usado em um servidor
     if (!interaction.guildId) {
       return await interaction.reply({
@@ -70,8 +79,18 @@ export default {
     // Registra o cooldown para o usuário
     cooldownService.registerCooldown(userId, commandName, COOLDOWN_DURATION);
 
-    // Incrementa no ranking do MongoDB
-    await incrementUser(alvo.id, interaction.guildId);
+    // Incrementa no ranking do MongoDB (passa o targetId para registrar alvo único)
+    await incrementUser(alvo.id, interaction.guildId, userId, 'zoar');
+
+    // Verifica achievements para o alvo (zoado)
+    const targetAchievements = await checkAndAwardAchievements(
+      alvo.id,
+      interaction.guildId,
+      'zoado'
+    );
+
+    // Verifica achievements para quem zoou
+    const authorAchievements = await checkAndAwardAchievements(userId, interaction.guildId, 'zoou');
 
     // Obtém as frases zoeiras do arquivo de tradução
     const frasesZoeiras = t('commands.zoar.phrases').split('.,');
@@ -94,5 +113,55 @@ export default {
 
     // Responde com o embed
     await interaction.reply({ embeds: [embed] });
+
+    // Se algum achievement foi desbloqueado para o alvo, envia uma mensagem para ele
+    if (targetAchievements && targetAchievements.length > 0) {
+      try {
+        // Cria o embed de conquista
+        const achievementEmbed = new EmbedBuilder()
+          .setColor('Gold')
+          .setTitle(t('achievements.unlocked.title'))
+          .setDescription(
+            t('achievements.unlocked.description', {
+              achievement: t(`achievements.${targetAchievements[0]}`),
+            })
+          )
+          .setFooter({
+            text: t('footer', { botName: BOT_CONFIG.NAME }),
+          });
+
+        // Tenta enviar mensagem privada para o alvo
+        await alvo.send({ embeds: [achievementEmbed] }).catch(() => {
+          // Se falhar, não faz nada (usuário pode ter DMs desativadas)
+        });
+      } catch (error) {
+        console.error('Erro ao enviar notificação de achievement:', error);
+      }
+    }
+
+    // Se algum achievement foi desbloqueado para o autor, envia uma mensagem para ele
+    if (authorAchievements && authorAchievements.length > 0) {
+      try {
+        // Cria o embed de conquista
+        const achievementEmbed = new EmbedBuilder()
+          .setColor('Gold')
+          .setTitle(t('achievements.unlocked.title'))
+          .setDescription(
+            t('achievements.unlocked.description', {
+              achievement: t(`achievements.${authorAchievements[0]}`),
+            })
+          )
+          .setFooter({
+            text: t('footer', { botName: BOT_CONFIG.NAME }),
+          });
+
+        // Tenta enviar mensagem privada para o autor
+        await interaction.user.send({ embeds: [achievementEmbed] }).catch(() => {
+          // Se falhar, não faz nada (usuário pode ter DMs desativadas)
+        });
+      } catch (error) {
+        console.error('Erro ao enviar notificação de achievement:', error);
+      }
+    }
   },
 };

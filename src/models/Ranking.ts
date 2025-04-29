@@ -7,6 +7,8 @@ export interface IRanking extends Document {
   userId: string;
   serverId: string;
   count: number;
+  uniqueTargets: string[];
+  uniqueApelidos: string[];
 }
 
 /**
@@ -26,6 +28,14 @@ const RankingSchema = new Schema<IRanking>(
       type: Number,
       default: 0,
     },
+    uniqueTargets: {
+      type: [String],
+      default: [],
+    },
+    uniqueApelidos: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true, // Adiciona createdAt e updatedAt
@@ -35,5 +45,9 @@ const RankingSchema = new Schema<IRanking>(
 // Cria um índice composto para garantir registros únicos por usuário+servidor
 RankingSchema.index({ userId: 1, serverId: 1 }, { unique: true });
 
-// Exporta o modelo
-export default mongoose.model<IRanking>('Ranking', RankingSchema, 'rankings');
+/**
+ * Modelo do MongoDB para Ranking
+ */
+export const Ranking = mongoose.model<IRanking>('Ranking', RankingSchema, 'rankings');
+
+export default Ranking;

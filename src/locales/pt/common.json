@@ -7,17 +7,20 @@
     "no_members_to_insult": "Ninguém para humilhar no momento."
   },
   "cooldown": {
-    "wait": "⏳ Espera um pouco! Você precisa esperar **{seconds} segundos** para usar {command} novamente."
+    "wait": "Espera um pouco! Você precisa esperar **{seconds} segundos** para usar {command} novamente."
   },
   "commands": {
     "zoar": {
       "name": "zoar",
-      "title": "👑 Zoação Realizada!",
+      "title": "Zoação Realizada!",
       "builder": {
         "description": "Zoa um membro do servidor",
         "options": {
           "alvo": "A pessoa que será zoada"
         }
+      },
+      "error": {
+        "self_target": "Você não pode zoar a si mesmo! Isso seria muito triste..."
       },
       "phrases": [
         "{alvo} tá jogando tão mal que até os bots do tutorial têm pena.",
@@ -33,7 +36,7 @@
       ]
     },
     "humilhar": {
-      "title": "💀 Humilhação Pública!",
+      "title": "Humilhação Pública!",
       "builder": {
         "description": "Escolhe alguém aleatório para zoar."
       },
@@ -46,7 +49,7 @@
       ]
     },
     "apelido": {
-      "title": "🎯 Novo Apelido Encontrado!",
+      "title": "Novo Apelido Encontrado!",
       "builder": {
         "description": "Sugere um apelido engraçado para alguém.",
         "options": {
@@ -97,7 +100,7 @@
       "builder": {
         "description": "Mostra o ranking dos membros mais zoados"
       },
-      "title": "🏆 Ranking dos Mais Zoados",
+      "title": "Ranking dos Mais Zoados",
       "empty": "Ainda não há ninguém no ranking. Comece a zoar!",
       "unknown_user": "Usuário desconhecido",
       "action_name": "zoeira",
@@ -118,7 +121,35 @@
         "description": "Ranking dos membros mais zoados",
         "footer": "by {botName} 👑"
       }
+    },
+    "achievements": {
+      "builder": {
+        "description": "Mostra suas conquistas ou de outro usuário",
+        "options": {
+          "user": "Usuário para ver as conquistas"
+        }
+      },
+      "no_achievements_self": "Você ainda não desbloqueou nenhuma conquista! Continue participando para ganhar conquistas.",
+      "no_achievements_other": "{username} ainda não desbloqueou nenhuma conquista!",
+      "unlocked_section": "🏆 Conquistas Desbloqueadas",
+      "pending_section": "⏳ Em Progresso",
+      "error": "Ocorreu um erro ao buscar as conquistas! Tente novamente mais tarde.",
+      "embed": {
+        "title_self": "Suas Conquistas",
+        "title_other": "Conquistas de {username}"
+      }
     }
+  },
+  "achievements": {
+    "unlocked": {
+      "title": "Nova Conquista Desbloqueada!",
+      "description": "Você desbloqueou: **{achievement}**"
+    },
+    "zoado_10": "Zoado Iniciante - Ser zoado 10 vezes",
+    "zoado_50": "Alvo Favorito - Ser zoado 50 vezes",
+    "zoado_100": "Mascote das Zoeiras - Ser zoado 100 vezes",
+    "zoador_30": "Mestre da Zoeira - Zoar 30 pessoas diferentes",
+    "apelidador_20": "Apelidador Supremo - Criar 20 apelidos"
   },
   "footer": "by {botName} 👑"
 }
