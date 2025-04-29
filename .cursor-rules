@@ -19,7 +19,9 @@
     "file_size": "small and focused on single responsibility",
     "readability_priority": true,
     "comments": "only where necessary to explain complex logic",
-    "typescript_typing": "strong typing, avoid 'any'"
+    "typescript_typing": "strong typing, avoid 'any'",
+    "code_quality": "high",
+    "code_language": "english"
   },
   "error_handling": {
     "use_try_catch": true,

@@ -1,13 +1,13 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { incrementUser } from '../services/rankingService';
 import { canExecute } from '../utils/canExecuteCommand';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('apelido')
-    .setDescription('Sugere um apelido engraçado para alguém.')
+    .setDescription('Sugere um apelido zoeiro para alguém')
     .addUserOption((option) =>
-      option.setName('user').setDescription('Usuário para apelidar').setRequired(true)
+      option.setName('alvo').setDescription('Pessoa que receberá um apelido').setRequired(true)
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
@@ -18,25 +18,93 @@ export default {
       });
     }
 
-    const user = interaction.options.getUser('user');
-    if (!user) {
-      return interaction.reply({ content: 'Não encontrei esse usuário.', ephemeral: true });
+    // Pega o usuário alvo
+    const alvo = interaction.options.getUser('alvo');
+
+    if (!alvo) {
+      return await interaction.reply({
+        content: 'Você precisa mencionar alguém para dar um apelido!',
+        ephemeral: true,
+      });
     }
 
     // Incrementa no ranking real
-    incrementUser(user.id);
+    incrementUser(alvo.id);
 
-    const apelidos = [
-      'LagLord',
-      'BugMaster',
-      'Noobzera',
-      'Crashador',
-      'Feedador Oficial',
-      'Rei do Respawn',
+    // Lista de prefixos e sufixos para criar apelidos
+    const prefixos = [
+      'Mestre',
+      'Rei',
+      'Destruidor',
+      'Campeão',
+      'Lenda',
+      'Noob',
+      'Mago',
+      'Caçador',
+      'Imperador',
+      'Guerreiro',
+      'Titan',
+      'Plebeu',
+      'Capitão',
+      'Ultra',
+      'Mega',
+      'Super',
+      'Hiper',
+      'Dr.',
+      'Sir',
+      'Mito',
+      'Rookie',
     ];
 
-    const apelido = apelidos[Math.floor(Math.random() * apelidos.length)];
+    const sufixos = [
+      'das Sombras',
+      'do Lag',
+      'dos Bugs',
+      'das Derrotas',
+      'do Mato',
+      'do Bronze',
+      'do Atraso',
+      'da Ruindade',
+      'da Derrota',
+      'do DC',
+      'do Choro',
+      'das Falhas',
+      'dos Tombos',
+      'do AFK',
+      'do Respawn',
+      'da Morte Boba',
+      'do Tutorial',
+      'dos Memes',
+      'da Trollagem',
+      'dos Feeders',
+      'das Quests Fáceis',
+    ];
 
-    await interaction.reply(`@${user.username} agora é conhecido como **${apelido}**!`);
+    // Gera um apelido aleatório combinando prefixo e sufixo
+    const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
+    const sufixo = sufixos[Math.floor(Math.random() * sufixos.length)];
+    const apelido = `${prefixo} ${sufixo}`;
+
+    // Cria mensagens personalizadas
+    const frases = [
+      `Acabei de pensar no apelido perfeito para ${alvo}: **${apelido}**`,
+      `Analisando o histórico de jogo de ${alvo}, o apelido ideal seria: **${apelido}**`,
+      `Se eu fosse rebatizar ${alvo}, seria como: **${apelido}**`,
+      `O título que melhor descreve ${alvo} é: **${apelido}**`,
+      `Depois de analisar suas habilidades, ${alvo} merece ser chamado de: **${apelido}**`,
+    ];
+
+    const fraseEscolhida = frases[Math.floor(Math.random() * frases.length)];
+
+    // Cria o embed com estilo da Soberaninha
+    const embed = new EmbedBuilder()
+      .setColor('Random')
+      .setTitle('🎯 Novo Apelido Encontrado!')
+      .setDescription(fraseEscolhida)
+      .setFooter({ text: 'by Soberaninha 👑' })
+      .setTimestamp();
+
+    // Responde com o embed
+    await interaction.reply({ embeds: [embed] });
   },
 };

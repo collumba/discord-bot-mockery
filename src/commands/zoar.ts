@@ -1,33 +1,59 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
+import {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  UserMention,
+} from 'discord.js';
 import { incrementUser } from '../services/rankingService';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('zoar')
-    .setDescription('Zoar alguém aleatoriamente.')
+    .setDescription('Zoa um membro do servidor')
     .addUserOption((option) =>
-      option.setName('user').setDescription('Usuário para zoar').setRequired(true)
+      option.setName('alvo').setDescription('A pessoa que será zoada').setRequired(true)
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    const user = interaction.options.getUser('user');
-    if (!user) {
-      return interaction.reply({ content: 'Não encontrei esse usuário.', ephemeral: true });
+    // Pega o usuário alvo da zoação
+    const alvo = interaction.options.getUser('alvo');
+
+    if (!alvo) {
+      return await interaction.reply({
+        content: 'Você precisa mencionar alguém para zoar!',
+        ephemeral: true,
+      });
     }
 
     // Incrementa no ranking real
-    incrementUser(user.id);
+    incrementUser(alvo.id);
 
-    const zoeiras = [
-      `@${user.username} tentou ser útil hoje, mas falhou miseravelmente.`,
-      `@${user.username} é o tipo de pessoa que perde no tutorial.`,
-      `@${user.username} ainda acredita que main healer é DPS.`,
-      `@${user.username} é tão rápido quanto um lag de 400ms.`,
-      `@${user.username} já tá quase virando bot de tão ruim.`,
+    // Lista de frases zoeiras (adicione mais conforme necessário)
+    const frasesZoeiras = [
+      `${alvo} tá jogando tão mal que até os bots do tutorial têm pena.`,
+      `Todo mundo erra, mas ${alvo} eleva isso a uma arte.`,
+      `${alvo} é o tipo de pessoa que morre pro tutorial.`,
+      `${alvo} tá tão ruim hoje que seria kickado de um jogo single-player.`,
+      `${alvo} tem tanto talento que até o auto-aim desiste.`,
+      `Os NPCs entram em modo fácil quando veem ${alvo} chegando.`,
+      `${alvo} é aquele que compra skin pra morrer mais bonito.`,
+      `Dizem que ${alvo} já zerou o LoL. Morreu de todas as formas possíveis.`,
+      `As estatísticas de ${alvo} são tão ruins que a Steam sugere jogar Candy Crush.`,
+      `${alvo} é tão azarado que até bug acontece só com ele.`,
     ];
 
-    const frase = zoeiras[Math.floor(Math.random() * zoeiras.length)];
+    // Seleciona uma frase aleatória
+    const fraseEscolhida = frasesZoeiras[Math.floor(Math.random() * frasesZoeiras.length)];
 
-    await interaction.reply(frase);
+    // Cria o embed com estilo da Soberaninha
+    const embed = new EmbedBuilder()
+      .setColor('Random')
+      .setTitle('👑 Zoação Realizada!')
+      .setDescription(fraseEscolhida)
+      .setFooter({ text: 'by Soberaninha 👑' })
+      .setTimestamp();
+
+    // Responde com o embed
+    await interaction.reply({ embeds: [embed] });
   },
 };
