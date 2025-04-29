@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { getTopRankingLegacy } from '../services/rankingService';
+import BOT_CONFIG from '../config/botConfig';
 
 export default {
   data: new SlashCommandBuilder()
@@ -68,12 +69,12 @@ export default {
         rankingText += `\n${mensagemAleatoria}`;
       }
 
-      // Cria o embed com estilo da Soberaninha
+      // Cria o embed com estilo do bot
       const embed = new EmbedBuilder()
         .setColor('Random')
         .setTitle('🏆 Ranking dos Mais Zoados')
         .setDescription(rankingText)
-        .setFooter({ text: 'by Soberaninha 👑' })
+        .setFooter({ text: `by ${BOT_CONFIG.NAME} 👑` })
         .setTimestamp();
 
       // Responde com o embed

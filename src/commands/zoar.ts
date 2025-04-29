@@ -5,6 +5,11 @@ import {
   UserMention,
 } from 'discord.js';
 import { incrementUser } from '../services/rankingService';
+import cooldownService from '../services/cooldownService';
+import BOT_CONFIG from '../config/botConfig';
+
+// Configuração do cooldown para o comando zoar (em segundos)
+const COOLDOWN_DURATION = 20;
 
 export default {
   data: new SlashCommandBuilder()
@@ -15,6 +20,27 @@ export default {
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
+    const userId = interaction.user.id;
+    const commandName = interaction.commandName;
+
+    // Verifica se o usuário está em cooldown
+    if (cooldownService.isInCooldown(userId, commandName)) {
+      const remainingTime = cooldownService.getRemainingCooldown(userId, commandName);
+
+      // Cria o embed de aviso de cooldown
+      const cooldownEmbed = new EmbedBuilder()
+        .setColor(BOT_CONFIG.COLORS.WARNING)
+        .setTitle(`${BOT_CONFIG.ICONS.COOLDOWN} Espera um pouco!`)
+        .setDescription(
+          `Você precisa esperar ${remainingTime} segundos para usar /${commandName} de novo.`
+        )
+        .setFooter({ text: BOT_CONFIG.FOOTER_TEXT })
+        .setTimestamp();
+
+      // Responde com o aviso (ephemeral para não poluir o chat)
+      return await interaction.reply({ embeds: [cooldownEmbed], ephemeral: true });
+    }
+
     // Pega o usuário alvo da zoação
     const alvo = interaction.options.getUser('alvo');
 
@@ -32,6 +58,9 @@ export default {
         ephemeral: true,
       });
     }
+
+    // Registra o cooldown para o usuário
+    cooldownService.registerCooldown(userId, commandName, COOLDOWN_DURATION);
 
     // Incrementa no ranking do MongoDB - note o await e o serverId adicionado
     await incrementUser(alvo.id, interaction.guildId);
@@ -53,12 +82,12 @@ export default {
     // Seleciona uma frase aleatória
     const fraseEscolhida = frasesZoeiras[Math.floor(Math.random() * frasesZoeiras.length)];
 
-    // Cria o embed com estilo da Soberaninha
+    // Cria o embed com estilo do bot
     const embed = new EmbedBuilder()
-      .setColor('Random')
-      .setTitle('👑 Zoação Realizada!')
+      .setColor(BOT_CONFIG.COLORS.DEFAULT)
+      .setTitle(`${BOT_CONFIG.ICONS.ZOAR} Zoação Realizada!`)
       .setDescription(fraseEscolhida)
-      .setFooter({ text: 'by Soberaninha 👑' })
+      .setFooter({ text: BOT_CONFIG.FOOTER_TEXT })
       .setTimestamp();
 
     // Responde com o embed
