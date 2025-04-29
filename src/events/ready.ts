@@ -1,11 +1,10 @@
-import { Events, Client } from 'discord.js';
-import { client } from '../config/client';
+import { Client, Events } from 'discord.js';
 
-// Exporta uma função que registra o evento ready
-export default () => {
-  client.once(Events.ClientReady, (readyClient: Client) => {
-    if (readyClient.user) {
-      console.log(`Soberaninha está online! Logado como ${readyClient.user.tag}`);
-    }
-  });
-}; 
+export const name = Events.ClientReady;
+export const once = true;
+
+export async function execute(client: Client) {
+  if (client.user) {
+    console.log(`Soberaninha está online! Logado como ${client.user.tag}`);
+  }
+} 
