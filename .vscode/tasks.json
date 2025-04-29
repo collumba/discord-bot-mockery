@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$tsc"],
+      "label": "npm: build"
+    },
+    {
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": [],
+      "label": "npm: dev",
+      "detail": "Inicia o bot em modo de desenvolvimento"
+    },
+    {
+      "type": "npm",
+      "script": "deploy-commands",
+      "problemMatcher": [],
+      "label": "npm: deploy-commands",
+      "detail": "Registra os slash commands na API Discord"
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "label": "npm: lint",
+      "detail": "Verifica o código com ESLint"
+    },
+    {
+      "type": "npm",
+      "script": "lint:fix",
+      "problemMatcher": ["$eslint-stylish"],
+      "label": "npm: lint:fix",
+      "detail": "Corrige automaticamente problemas de ESLint"
+    },
+    {
+      "type": "npm",
+      "script": "format",
+      "problemMatcher": [],
+      "label": "npm: format",
+      "detail": "Formata o código usando Prettier"
+    }
+  ]
+}

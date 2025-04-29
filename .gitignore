@@ -12,7 +12,6 @@ logs/
 *.log
 
 # IDE files
-.vscode/
 .idea/
 
 # OS specific files
