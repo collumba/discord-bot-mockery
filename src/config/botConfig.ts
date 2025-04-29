@@ -36,8 +36,8 @@ export const BOT_CONFIG = {
   // Presence Roaster settings
   PRESENCE_ROASTER: {
     ENABLED: true, // Enable/disable game roasting
-    ROAST_CHANCE: 0.2, // 20% chance to roast
-    COOLDOWN_TIME: 10, // Cooldown in minutes
+    ROAST_CHANCE: 1, // 20% chance to roast
+    COOLDOWN_TIME: 1, // Cooldown in minutes
     DEFAULT_CHANNEL_ID: process.env.DEFAULT_ROAST_CHANNEL || '', // Set in .env
   },
 
