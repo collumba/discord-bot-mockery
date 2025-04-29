@@ -2,37 +2,37 @@ import mongoose from 'mongoose';
 import logger from '../utils/logger';
 
 /**
- * Conecta ao MongoDB usando a URI fornecida no .env
+ * Connnecsstto MongoDB uiig thehe URppovidoddi  then the file .env file
  */
 export async function connectMongo(): Promise<void> {
   try {
     const mongoUri = process.env.MONGO_URI;
 
     if (!mongoUri) {
-      throw new Error('MONGO_URI não encontrada no arquivo .env');
+      throw new Error('MONGO_URI not found in .env file');
     }
 
     await mongoose.connect(mongoUri);
 
-    logger.info('Conectado ao MongoDB com sucesso');
+    logger.info('Connected to MongoDB successfully');
 
-    // Eventos de conexão
+    // Connection events
     mongoose.connection.on('error', (err) => {
-      logger.error(`Erro na conexão MongoDB: ${err}`);
+      logger.error(`MongoDB connection error: ${err}`);
     });
 
     mongoose.connection.on('disconnected', () => {
-      logger.warn('MongoDB desconectado');
+      logger.warn('MongoDB disconnected');
     });
 
-    // Tratamento para encerramento do processo
+    // Process termination handler
     process.on('SIGINT', async () => {
       await mongoose.connection.close();
-      logger.info('Conexão MongoDB encerrada devido ao término da aplicação');
+      logger.info('MongoDB connection closed due to application termination');
       process.exit(0);
     });
   } catch (error) {
-    logger.error('Falha ao conectar ao MongoDB', error as Error);
+    logger.error('Failed to connect to MongoDB', error as Error);
     throw error;
   }
 }

@@ -6,6 +6,6 @@ export const once = true;
 
 export async function execute(client: Client) {
   if (client.user) {
-    console.log(`${BOT_CONFIG.NAME} está online! Logado como ${client.user.tag}`);
+    console.log(`${BOT_CONFIG.NAME} is online! Logged in as ${client.user.tag}`);
   }
 }

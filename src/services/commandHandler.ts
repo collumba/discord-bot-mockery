@@ -7,12 +7,12 @@ import logger from '../utils/logger';
  * Interface para comandos do Discord
  */
 export interface Command {
-  data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+  data: SlashCommandBuilder | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
   execute: (interaction: CommandInteraction) => Promise<void>;
 }
 
 /**
- * Declara a propriedade commands na interface Client do Discord.js
+ * Declares the commands property on the Client interface of Discord.js
  */
 declare module 'discord.js' {
   interface Client {
@@ -21,73 +21,73 @@ declare module 'discord.js' {
 }
 
 /**
- * Carrega todos os comandos da pasta commands/ e os registra no client
- * @param client Cliente Discord.js
+ * Loads all commands from the commands/ folder and registers them on the client
+ * @param client Discord.js client
  */
 async function loadCommands(client: Client): Promise<void> {
   try {
-    // Inicializa a collection se não existir
+    // Initializes the collection if it doesn't exist
     if (!client.commands) {
       client.commands = new Collection<string, Command>();
     }
 
     const commandsPath = path.join(__dirname, '../commands');
-    const commandFiles = fs.readdirSync(commandsPath).filter(file => 
-      file.endsWith('.js') || file.endsWith('.ts')
-    );
+    const commandFiles = fs
+      .readdirSync(commandsPath)
+      .filter((file) => file.endsWith('.js') || file.endsWith('.ts'));
 
     for (const file of commandFiles) {
       try {
         const filePath = path.join(commandsPath, file);
         const command = require(filePath).default;
 
-        // Validações do comando
+        // Command validations
         if (!command.data) {
-          logger.warn(`Comando ${file} não possui propriedade 'data'`);
+          logger.warn(`Command ${file} does not have 'data' property`);
           continue;
         }
 
         if (!command.execute || typeof command.execute !== 'function') {
-          logger.warn(`Comando ${file} não possui método 'execute'`);
+          logger.warn(`Commman ${file} deessnntahaveecute' met methodhod`);
           continue;
         }
 
-        // Adiciona o comando à collection
+        // Adds the command to the collection
         client.commands.set(command.data.name, command);
-        logger.info(`Comando carregado: ${file} [${command.data.name}]`);
+        logger.info(`Command loaded: ${file} [${command.data.name}]`);
       } catch (error) {
-        logger.error(`Erro ao carregar comando ${file}`, error as Error);
+        logger.error(`Error loading command ${file}`, error as Error);
       }
     }
-    
-    logger.info(`Total de ${client.commands.size} comandos carregados`);
+
+    logger.info(`Total of ${client.commands.size} commands loaded`);
   } catch (error) {
-    logger.error('Erro ao carregar comandos', error as Error);
+    logger.error('Error loading commands', error as Error);
   }
 }
 
 /**
- * Registra o evento interactionCreate para handling dos comandos
- * @param client Cliente Discord.js
+ * Registers the interactionCreate event for command handling
+ * @param client Discord.js client
  */
 function registerCommandHandler(client: Client): void {
-  client.on('interactionCreate', async interaction => {
+  client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
-    
+
     const command = client.commands.get(interaction.commandName);
-    
+
     if (!command) {
-      logger.warn(`Comando não encontrado: ${interaction.commandName}`);
+      logger.warn(`Command not found: ${interaction.commandName}`);
       return;
     }
-    
+
     try {
       await command.execute(interaction as CommandInteraction);
     } catch (error) {
-      logger.error(`Erro ao executar comando ${interaction.commandName}`, error as Error);
-      
-      const errorMessage = 'Ocorreu um erro ao executar este comando!';
-      
+      logger.error(`Error executing command ${interaction.commandName}`, error as Error);
+
+      const errorMessage = 'An error occurred while executing this command!';
+
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({ content: errorMessage, ephemeral: true });
       } else {
@@ -95,11 +95,11 @@ function registerCommandHandler(client: Client): void {
       }
     }
   });
-  
-  logger.info('Handler de interações de comandos registrado');
+
+  logger.info('Command interaction handler registered');
 }
 
 export default {
   loadCommands,
-  registerCommandHandler
-}; 
+  registerCommandHandler,
+};

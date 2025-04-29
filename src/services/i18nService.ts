@@ -76,7 +76,7 @@ function replacePlaceholders(text: string, replacements?: Record<string, any>): 
 /**
  * Get a value from a nested object using a dot notation path
  * @param obj The object to search in
- * @param path The dot notation path, e.g. "commands.zoar.title"
+ * @param path The dot notation path, e.g. "commands.mock.title"
  * @returns The value found or undefined
  */
 function getNestedValue(obj: any, path: string): any {
@@ -95,7 +95,7 @@ function getNestedValue(obj: any, path: string): any {
 
 /**
  * Get translation for a specific key
- * @param key Translation key (e.g. 'commands.zoar.success')
+ * @param key Translation key (e.g. 'commands.mock.success')
  * @param lang Language code (defaults to 'pt')
  * @param placeholders Object with values to replace in the translation
  * @returns Translated string

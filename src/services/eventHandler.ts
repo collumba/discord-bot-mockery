@@ -4,7 +4,7 @@ import path from 'path';
 import logger from '../utils/logger';
 
 /**
- * Interface para eventos do Discord
+ * Interface for Discord events
  */
 interface Event {
   name: string;
@@ -12,16 +12,12 @@ interface Event {
   execute: (client: Client, ...args: any[]) => Promise<void> | void;
 }
 
-/**
- * Carrega todos os eventos da pasta events/ e os registra no client
- * @param client Cliente Discord.js
- */
 async function loadEvents(client: Client): Promise<void> {
   try {
     const eventsPath = path.join(__dirname, '../events');
-    const eventFiles = fs.readdirSync(eventsPath).filter(file => 
-      file.endsWith('.js') || file.endsWith('.ts')
-    );
+    const eventFiles = fs
+      .readdirSync(eventsPath)
+      .filter((file) => file.endsWith('.js') || file.endsWith('.ts'));
 
     for (const file of eventFiles) {
       try {
@@ -29,32 +25,32 @@ async function loadEvents(client: Client): Promise<void> {
         const event = require(filePath);
 
         if (!event.name) {
-          logger.warn(`Evento ${file} não possui propriedade 'name'`);
+          logger.warn(`Event ${file} does not have 'name' property`);
           continue;
         }
 
         if (!event.execute || typeof event.execute !== 'function') {
-          logger.warn(`Evento ${file} não possui método 'execute'`);
+          logger.warn(`Event ${file} does not have 'execute' method`);
           continue;
         }
 
-        // Registra o evento baseado na propriedade 'once'
+        // Registers the event based on the 'once' property
         if (event.once) {
           client.once(event.name, (...args) => event.execute(client, ...args));
         } else {
           client.on(event.name, (...args) => event.execute(client, ...args));
         }
 
-        logger.info(`Evento carregado: ${file} [${event.name}${event.once ? ' - once' : ''}]`);
+        logger.info(`Event loaded: ${file} [${event.name}${event.once ? ' - once' : ''}]`);
       } catch (error) {
-        logger.error(`Erro ao carregar evento ${file}`, error as Error);
+        logger.error(`Error loading event ${file}`, error as Error);
       }
     }
-    
-    logger.info('Todos os eventos foram carregados');
+
+    logger.info('All events loaded');
   } catch (error) {
-    logger.error('Erro ao carregar eventos', error as Error);
+    logger.error('Error loading events', error as Error);
   }
 }
 
-export default loadEvents; 
+export default loadEvents;

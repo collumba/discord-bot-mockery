@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 /**
- * Interface para o documento de Achievement no MongoDB
+ * Interface for the Achievement document in MongoDB
  */
 export interface IAchievement extends Document {
   userId: string;
@@ -12,7 +12,7 @@ export interface IAchievement extends Document {
 }
 
 /**
- * Schema do MongoDB para Achievement
+ * Schema for the Achievement document in MongoDB
  */
 const AchievementSchema = new Schema<IAchievement>(
   {
@@ -32,11 +32,11 @@ const AchievementSchema = new Schema<IAchievement>(
   { timestamps: true }
 );
 
-// Índice composto para buscar rapidamente achievements de um usuário em um servidor
+// Composite index to quickly search for achievements of a user in a server
 AchievementSchema.index({ userId: 1, serverId: 1 }, { unique: true });
 
 /**
- * Modelo do MongoDB para Achievement
+ * MongoDB model for Achievement
  */
 export const Achievement = mongoose.model<IAchievement>('Achievement', AchievementSchema);
 

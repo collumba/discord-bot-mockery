@@ -4,19 +4,19 @@ import { t } from '../services/i18nService';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName('frasealeatoria')
-    .setDescription(t('commands.frasealeatoria.builder.description', { botName: BOT_CONFIG.NAME })),
+    .setName('randomphrase')
+    .setDescription(t('commands.randomphrase.builder.description', { botName: BOT_CONFIG.NAME })),
 
   async execute(interaction: ChatInputCommandInteraction) {
     // Get phrases and split into array since they're joined with .,
-    const frasesArray = t('commands.frasealeatoria.phrases').split('.,');
+    const phrasesArray = t('commands.randomphrase.phrases').split('.,');
 
     // Choose a random phrase
-    const fraseBase = frasesArray[Math.floor(Math.random() * frasesArray.length)];
+    const basePhrase = phrasesArray[Math.floor(Math.random() * phrasesArray.length)];
 
     // Replace placeholders
-    const frase = fraseBase.replace(/{botName}/g, BOT_CONFIG.NAME);
+    const phrase = basePhrase.replace(/{botName}/g, BOT_CONFIG.NAME);
 
-    await interaction.reply(frase);
+    await interaction.reply(phrase);
   },
 };

@@ -10,32 +10,32 @@
     "wait": "Espera um pouco! Você precisa esperar **{seconds} segundos** para usar {command} novamente."
   },
   "commands": {
-    "zoar": {
+    "mock": {
       "name": "zoar",
       "title": "Zoação Realizada!",
       "builder": {
         "description": "Zoa um membro do servidor",
         "options": {
-          "alvo": "A pessoa que será zoada"
+          "target": "A pessoa que será zoada"
         }
       },
       "error": {
         "self_target": "Você não pode zoar a si mesmo! Isso seria muito triste..."
       },
       "phrases": [
-        "{alvo} tá jogando tão mal que até os bots do tutorial têm pena.",
-        "Todo mundo erra, mas {alvo} eleva isso a uma arte.",
-        "{alvo} é o tipo de pessoa que morre pro tutorial.",
-        "{alvo} tá tão ruim hoje que seria kickado de um jogo single-player.",
-        "{alvo} tem tanto talento que até o auto-aim desiste.",
-        "Os NPCs entram em modo fácil quando veem {alvo} chegando.",
-        "{alvo} é aquele que compra skin pra morrer mais bonito.",
-        "Dizem que {alvo} já zerou o LoL. Morreu de todas as formas possíveis.",
-        "As estatísticas de {alvo} são tão ruins que a Steam sugere jogar Candy Crush.",
-        "{alvo} é tão azarado que até bug acontece só com ele."
+        "{target} tá jogando tão mal que até os bots do tutorial têm pena.",
+        "Todo mundo erra, mas {target} eleva isso a uma arte.",
+        "{target} é o tipo de pessoa que morre pro tutorial.",
+        "{target} tá tão ruim hoje que seria kickado de um jogo single-player.",
+        "{target} tem tanto talento que até o auto-aim desiste.",
+        "Os NPCs entram em modo fácil quando veem {target} chegando.",
+        "{target} é aquele que compra skin pra morrer mais bonito.",
+        "Dizem que {target} já zerou o LoL. Morreu de todas as formas possíveis.",
+        "As estatísticas de {target} são tão ruins que a Steam sugere jogar Candy Crush.",
+        "{target} é tão azarado que até bug acontece só com ele."
       ]
     },
-    "humilhar": {
+    "humiliate": {
       "title": "Humilhação Pública!",
       "builder": {
         "description": "Escolhe alguém aleatório para zoar."
@@ -48,7 +48,7 @@
         "{username} é tão ruim que até os bots evitam."
       ]
     },
-    "apelido": {
+    "nickname": {
       "title": "Novo Apelido Encontrado!",
       "builder": {
         "description": "Sugere um apelido engraçado para alguém.",
@@ -56,7 +56,7 @@
           "user": "Usuário para apelidar"
         }
       },
-      "success": "{username} agora é conhecido como **{apelido}**!",
+      "success": "{username} agora é conhecido como **{nickname}**!",
       "nicknames": [
         "LagLord",
         "BugMaster",
@@ -66,7 +66,7 @@
         "Rei do Respawn"
       ]
     },
-    "desafiar": {
+    "challenge": {
       "builder": {
         "description": "Desafia um usuário aleatório para um duelo!",
         "options": {
@@ -81,7 +81,7 @@
         "@username, duelo de quem faz mais vergonha em público!"
       ]
     },
-    "frasealeatoria": {
+    "randomphrase": {
       "builder": {
         "description": "Solta uma frase aleatória da zoeira da {botName}."
       },
@@ -140,16 +140,31 @@
       }
     }
   },
+  "services": {
+    "reminders": {
+      "phrases": [
+        "E aí, cadê os bravos do PvP?",
+        "Chat mais morto que meu KD.",
+        "Se ninguém falar nada em 5 minutos, vou começar a humilhar aleatoriamente.",
+        "Partidinha casual, alguém?",
+        "Isso aqui tá parecendo fila de MMORPG às 3 da manhã.",
+        "Alguém dropa emoção aí que tá em falta.",
+        "Silêncio no chat é sinal de que estão todos perdendo no jogo.",
+        "Mais quieto que lobby depois de um rage quit coletivo.",
+        "Esse chat tá precisando de uma buff de comunicação."
+      ]
+    }
+  },
   "achievements": {
     "unlocked": {
       "title": "Nova Conquista Desbloqueada!",
       "description": "Você desbloqueou: **{achievement}**"
     },
-    "zoado_10": "Zoado Iniciante - Ser zoado 10 vezes",
-    "zoado_50": "Alvo Favorito - Ser zoado 50 vezes",
-    "zoado_100": "Mascote das Zoeiras - Ser zoado 100 vezes",
-    "zoador_30": "Mestre da Zoeira - Zoar 30 pessoas diferentes",
-    "apelidador_20": "Apelidador Supremo - Criar 20 apelidos"
+    "mocked_10": "Zoado Iniciante - Ser zoado 10 vezes",
+    "mocked_50": "Alvo Favorito - Ser zoado 50 vezes",
+    "mocked_100": "Mascote das Zoeiras - Ser zoado 100 vezes",
+    "mocker_30": "Mestre da Zoeira - Zoar 30 pessoas diferentes",
+    "nicknamer_20": "Apelidador Supremo - Criar 20 apelidos"
   },
   "footer": "by {botName} 👑"
 }

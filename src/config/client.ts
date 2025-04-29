@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 if (!process.env.DISCORD_TOKEN) {
-  throw new Error('DISCORD_TOKEN não encontrado no arquivo .env');
+  throw new Error('DISCORD_TOKEN not found in .env file');
 }
 
 export const client = new Client({
@@ -12,8 +12,8 @@ export const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers
-  ]
+    GatewayIntentBits.GuildMembers,
+  ],
 });
 
-export default client; 
+export default client;

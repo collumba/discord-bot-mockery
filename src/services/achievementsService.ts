@@ -4,86 +4,114 @@ import logger from '../utils/logger';
 import { t } from './i18nService';
 
 /**
- * Tipos de eventos que podem conceder achievements
+ * Types of events that can grant achievements
  */
-export type AchievementEventType = 'zoado' | 'zoou' | 'apelido';
+export type AchievementEventType = 'mocked' | 'mocker' | 'nicknamer';
 
 /**
- * Interface para definição de um achievement
+ * Achievement definition
  */
-export interface AchievementDefinition {
+interface AchievementDefinition {
   id: string;
   translationKey: string;
-  condition: (userId: string, serverId: string) => Promise<boolean>;
-  type: AchievementEventType[];
+  check: (value: number) => boolean;
 }
 
 /**
- * Lista de achievements disponíveis
+ * List of available achievements
  */
-export const ACHIEVEMENTS: AchievementDefinition[] = [
+const ACHIEVEMENTS: AchievementDefinition[] = [
+  // Being mocked achievements
   {
-    id: 'zoado_10',
-    translationKey: 'achievements.zoado_10',
-    condition: async (userId: string, serverId: string) => {
-      const count = await getCountForUser(userId, serverId);
-      return count >= 10;
-    },
-    type: ['zoado'],
+    id: 'mocked_10',
+    translationKey: 'achievements.mocked_10',
+    check: (count: number) => count >= 10,
   },
   {
-    id: 'zoado_50',
-    translationKey: 'achievements.zoado_50',
-    condition: async (userId: string, serverId: string) => {
-      const count = await getCountForUser(userId, serverId);
-      return count >= 50;
-    },
-    type: ['zoado'],
+    id: 'mocked_50',
+    translationKey: 'achievements.mocked_50',
+    check: (count: number) => count >= 50,
   },
   {
-    id: 'zoado_100',
-    translationKey: 'achievements.zoado_100',
-    condition: async (userId: string, serverId: string) => {
-      const count = await getCountForUser(userId, serverId);
-      return count >= 100;
-    },
-    type: ['zoado'],
+    id: 'mocked_100',
+    translationKey: 'achievements.mocked_100',
+    check: (count: number) => count >= 100,
   },
+  // Mocking others achievements
   {
-    id: 'zoador_30',
-    translationKey: 'achievements.zoador_30',
-    condition: async (userId: string, serverId: string) => {
-      const count = await getUniqueTargetsCount(userId, serverId);
-      return count >= 30;
-    },
-    type: ['zoou'],
+    id: 'mocker_30',
+    translationKey: 'achievements.mocker_30',
+    check: (count: number) => count >= 30,
   },
+  // Nickname achievements
   {
-    id: 'apelidador_20',
-    translationKey: 'achievements.apelidador_20',
-    condition: async (userId: string, serverId: string) => {
-      const count = await getUniqueTargetsCount(userId, serverId, 'apelido');
-      return count >= 20;
-    },
-    type: ['apelido'],
+    id: 'nicknamer_20',
+    translationKey: 'achievements.nicknamer_20',
+    check: (count: number) => count >= 20,
   },
 ];
 
 /**
- * Busca ou cria o documento de achievements de um usuário
- * @param userId ID do usuário
- * @param serverId ID do servidor
- * @returns Documento de achievements
+ * Process an achievement event and award any earned achievements
+ * @param userId User ID
+ * @param serverId Server ID
+ * @param eventType Type of event (mocked, mocker, etc.)
+ * @param value Current value for the event type (e.g., number of times mocked)
+ * @returns Array of achievement IDs that were newly awarded, or null if error
+ */
+export async function processAchievementEvent(
+  userId: string,
+  serverId: string,
+  eventType: AchievementEventType,
+  value: number
+): Promise<string[] | null> {
+  try {
+    // Get existing user achievements
+    const userAchievements = await getOrCreateUserAchievements(userId, serverId);
+    const existingAchievements = userAchievements.achievements || [];
+
+    // Filter achievements by event type
+    const eligibleAchievements = ACHIEVEMENTS.filter((a) => a.id.startsWith(eventType));
+
+    // Find achievements to award (those that check passes and not already earned)
+    const newAchievements = eligibleAchievements.filter(
+      (a) => a.check(value) && !existingAchievements.includes(a.id)
+    );
+
+    // If there are new achievements, update the document
+    if (newAchievements.length > 0) {
+      const newAchievementIds = newAchievements.map((a) => a.id);
+      userAchievements.achievements = [...existingAchievements, ...newAchievementIds].sort();
+
+      await userAchievements.save();
+      return newAchievementIds;
+    }
+
+    return [];
+  } catch (error) {
+    logger.error(
+      `Error processing achievements for user ${userId}:`,
+      error instanceof Error ? error : new Error(String(error))
+    );
+    return null;
+  }
+}
+
+/**
+ * Fetches or creates a user's achievements document
+ * @param userId User ID
+ * @param serverId Server ID
+ * @returns Achievements document
  */
 export async function getOrCreateUserAchievements(
   userId: string,
   serverId: string
 ): Promise<IAchievement> {
   try {
-    // Tenta encontrar o documento existente
+    // Try to find existing document
     let userAchievements = await Achievement.findOne({ userId, serverId });
 
-    // Se não existir, cria um novo
+    // If it doesn't exist, create a new one
     if (!userAchievements) {
       userAchievements = new Achievement({
         userId,
@@ -105,57 +133,29 @@ export async function getOrCreateUserAchievements(
 }
 
 /**
- * Verifica e concede achievements para um usuário
- * @param userId ID do usuário
- * @param serverId ID do servidor
- * @param type Tipo de evento
- * @returns Array com os achievements desbloqueados ou null se nenhum
+ * Checks for new achievements and awards them if earned
+ * @deprecated Use processAchievementEvent instead
+ * @param userId User ID
+ * @param serverId Server ID
+ * @param eventType Type of event (mocked, mocker, etc.)
+ * @returns Array of achievement IDs that were newly awarded, or null if error
  */
 export async function checkAndAwardAchievements(
   userId: string,
   serverId: string,
-  type: AchievementEventType
+  eventType: 'mocked' | 'mocker' | 'nicknamer'
 ): Promise<string[] | null> {
   try {
-    // Recupera ou cria o documento de achievements do usuário
-    const userAchievements = await getOrCreateUserAchievements(userId, serverId);
-
-    // Armazena os achievements desbloqueados nesta checagem
-    const newlyUnlocked: string[] = [];
-
-    // Filtra achievements relevantes para o tipo de evento
-    const relevantAchievements = ACHIEVEMENTS.filter((achievement) =>
-      achievement.type.includes(type)
-    );
-
-    // Verifica cada achievement do tipo especificado
-    for (const achievement of relevantAchievements) {
-      // Pula se o achievement já foi desbloqueado
-      if (userAchievements.achievements.includes(achievement.id)) {
-        continue;
-      }
-
-      // Verifica se o usuário cumpre a condição do achievement
-      const conditionMet = await achievement.condition(userId, serverId);
-
-      if (conditionMet) {
-        // Adiciona o achievement à lista do usuário
-        userAchievements.achievements.push(achievement.id);
-
-        // Adiciona à lista de achievements recém-desbloqueados
-        newlyUnlocked.push(achievement.id);
-
-        logger.info(`User ${userId} unlocked achievement ${achievement.id} in server ${serverId}`);
-      }
+    // Get current value based on event type
+    let value = 0;
+    if (eventType === 'mocked') {
+      value = await getCountForUser(userId, serverId);
+    } else if (eventType === 'mocker' || eventType === 'nicknamer') {
+      const actionType = eventType === 'mocker' ? 'mock' : 'nickname';
+      value = await getUniqueTargetsCount(userId, serverId, actionType);
     }
 
-    // Salva as alterações se algum achievement foi desbloqueado
-    if (newlyUnlocked.length > 0) {
-      await userAchievements.save();
-      return newlyUnlocked;
-    }
-
-    return null;
+    return processAchievementEvent(userId, serverId, eventType, value);
   } catch (error) {
     logger.error(
       `Error checking achievements for user ${userId}:`,
@@ -166,10 +166,10 @@ export async function checkAndAwardAchievements(
 }
 
 /**
- * Busca todos os achievements de um usuário
- * @param userId ID do usuário
- * @param serverId ID do servidor
- * @returns Array com os IDs dos achievements ou array vazio
+ * Gets all achievements for a user
+ * @param userId User ID
+ * @param serverId Server ID
+ * @returns Array of achievement IDs or empty array
  */
 export async function getUserAchievements(userId: string, serverId: string): Promise<string[]> {
   try {
@@ -185,9 +185,9 @@ export async function getUserAchievements(userId: string, serverId: string): Pro
 }
 
 /**
- * Converte um ID de achievement para seu título traduzido
- * @param achievementId ID do achievement
- * @returns Título traduzido do achievement
+ * Converts an achievement ID to its translated title
+ * @param achievementId Achievement ID
+ * @returns Translated achievement title
  */
 export function getAchievementTitle(achievementId: string): string {
   const achievement = ACHIEVEMENTS.find((a) => a.id === achievementId);
@@ -201,7 +201,7 @@ export function getAchievementTitle(achievementId: string): string {
 }
 
 /**
- * Interface para o resultado de progresso de um achievement
+ * Interface for achievement progress
  */
 export interface AchievementProgress {
   id: string;
@@ -212,6 +212,9 @@ export interface AchievementProgress {
 }
 
 /**
+ * Get user progress on all achievements
+ * @param userId User ID
+ * @param serverId Server ID
  * Obter o progresso do usuário em todos os achievements
  * @param userId ID do usuário
  * @param serverId ID do servidor
@@ -235,24 +238,24 @@ export async function getUserAchievementProgress(
 
       // Adiciona informações de progresso para achievements específicos
       if (
-        achievement.id === 'zoado_10' ||
-        achievement.id === 'zoado_50' ||
-        achievement.id === 'zoado_100'
+        achievement.id === 'mocked_10' ||
+        achievement.id === 'mocked_50' ||
+        achievement.id === 'mocked_100'
       ) {
         const count = await getCountForUser(userId, serverId);
         let total = 10;
 
-        if (achievement.id === 'zoado_50') total = 50;
-        if (achievement.id === 'zoado_100') total = 100;
+        if (achievement.id === 'mocked_50') total = 50;
+        if (achievement.id === 'mocked_100') total = 100;
 
         achievementProgress.progress = Math.min(count, total);
         achievementProgress.total = total;
-      } else if (achievement.id === 'zoador_30') {
+      } else if (achievement.id === 'mocker_30') {
         const count = await getUniqueTargetsCount(userId, serverId);
         achievementProgress.progress = Math.min(count, 30);
         achievementProgress.total = 30;
-      } else if (achievement.id === 'apelidador_20') {
-        const count = await getUniqueTargetsCount(userId, serverId, 'apelido');
+      } else if (achievement.id === 'nicknamer_20') {
+        const count = await getUniqueTargetsCount(userId, serverId, 'nickname');
         achievementProgress.progress = Math.min(count, 20);
         achievementProgress.total = 20;
       }

@@ -2,150 +2,152 @@
 import Ranking, { IRanking } from '../models/Ranking';
 import logger from '../utils/logger';
 
-// Interface para o formato do ranking
+// Interface for the ranking format
 interface RankingItem {
   userId: string;
   count: number;
 }
 
 /**
- * Incrementa a contagem de zoeiras para um usuário em um servidor específico
- * @param userId ID do usuário
- * @param serverId ID do servidor
- * @param targetId ID opcional do alvo (para rastrear alvos únicos)
- * @param actionType Tipo de ação (padrão: 'zoar')
+ * Increments the mockery count for a user in a specific server
+ * @param userId ID of the user
+ * @param serverId ID of the server
+ * @param targetId Optional target ID (to track unique targets)
+ * @param actionType Type of action (default: 'mock')
  */
 export async function incrementUser(
   userId: string,
   serverId: string,
   targetId?: string,
-  actionType: 'zoar' | 'apelido' = 'zoar'
+  actionType: 'mock' | 'nickname' = 'mock'
 ): Promise<void> {
   try {
-    // Tenta encontrar um registro existente
+    // Try to find existing record
     const existingRecord = await Ranking.findOne({ userId, serverId });
 
     if (existingRecord) {
-      // Se existir, incrementa o contador
+      // If it exists, increment the counter
       existingRecord.count += 1;
 
-      // Se temos um targetId, adicionamos aos alvos únicos
+      // If we have a targetId, add to unique targets
       if (targetId) {
-        // Inicializa arrays se não existirem
+        // Initialize arrays if they don't exist
         if (!existingRecord.uniqueTargets) existingRecord.uniqueTargets = [];
-        if (!existingRecord.uniqueApelidos) existingRecord.uniqueApelidos = [];
+        if (!existingRecord.uniqueNicknames) existingRecord.uniqueNicknames = [];
 
-        // Adiciona o targetId ao array correspondente se ainda não estiver lá
-        if (actionType === 'zoar' && !existingRecord.uniqueTargets.includes(targetId)) {
+        // Add targetId to corresponding array if not already there
+        if (actionType === 'mock' && !existingRecord.uniqueTargets.includes(targetId)) {
           existingRecord.uniqueTargets.push(targetId);
-        } else if (actionType === 'apelido' && !existingRecord.uniqueApelidos.includes(targetId)) {
-          existingRecord.uniqueApelidos.push(targetId);
+        } else if (
+          actionType === 'nickname' &&
+          !existingRecord.uniqueNicknames.includes(targetId)
+        ) {
+          existingRecord.uniqueNicknames.push(targetId);
         }
       }
 
       await existingRecord.save();
     } else {
-      // Se não existir, cria um novo
+      // If it doesn't exist, create a new one
       const newRecord: any = {
         userId,
         serverId,
         count: 1,
       };
 
-      // Adiciona o targetId aos arrays se fornecido
+      // Add targetId to arrays if provided
       if (targetId) {
-        if (actionType === 'zoar') {
+        if (actionType === 'mock') {
           newRecord.uniqueTargets = [targetId];
-        } else if (actionType === 'apelido') {
-          newRecord.uniqueApelidos = [targetId];
+        } else if (actionType === 'nickname') {
+          newRecord.uniqueNicknames = [targetId];
         }
       }
 
       await Ranking.create(newRecord);
     }
   } catch (error) {
-    logger.error(`Erro ao incrementar contagem para usuário ${userId}:`, error as Error);
-    // Garantimos que o erro não vai quebrar a experiência
+    logger.error(`Error incrementing count for user ${userId}:`, error as Error);
+    // Ensure the error doesn't break the experience
   }
 }
 
 /**
- * Retorna o ranking dos usuários mais zoados em um servidor específico
- * @param serverId ID do servidor
- * @param limit Número máximo de resultados (padrão: 5)
- * @returns Array de objetos com userId e count
+ * Returns the ranking of most mocked users in a specific server
+ * @param serverId ID of the server
+ * @param limit Maximum number of results (default: 5)
+ * @returns Array of objects with userId and count
  */
 export async function getTopRanking(serverId: string, limit = 5): Promise<RankingItem[]> {
   try {
-    // Busca os registros ordenados por count (decrescente)
+    // Find records sorted by count (descending)
     const rankings = await Ranking.find({ serverId })
       .sort({ count: -1 })
       .limit(limit)
       .select('userId count')
       .lean();
 
-    // Transforma para o formato esperado pelos comandos
+    // Transform to the format expected by commands
     return rankings.map((doc: any) => ({
       userId: doc.userId,
       count: doc.count,
     }));
   } catch (error) {
-    logger.error(`Erro ao buscar ranking para o servidor ${serverId}:`, error as Error);
-    // Em caso de erro, retorna array vazio
+    logger.error(`Error fetching ranking for server ${serverId}:`, error as Error);
+    // Return empty array in case of error
     return [];
   }
 }
 
 /**
- * Compatibilidade com formato anterior (para comandos antigos)
- * @param serverId ID do servidor
- * @param limit Número máximo de resultados
- * @returns Array de tuplas [userId, count]
+ * Returns the ranking of most mocked users in a specific server (legacy format)
+ * @param serverId ID of the server
+ * @param limit Maximum number of results (default: 5)
+ * @returns Array of [userId, count] tuples
  */
 export async function getTopRankingLegacy(
   serverId: string,
   limit = 5
-): Promise<Array<[string, number]>> {
+): Promise<[string, number][]> {
   try {
     const rankings = await getTopRanking(serverId, limit);
-    // Converte para o formato anterior [userId, count]
-    return rankings.map((r) => [r.userId, r.count]);
+    return rankings.map((item) => [item.userId, item.count]);
   } catch (error) {
-    logger.error('Erro ao buscar ranking legado:', error as Error);
+    logger.error(`Error fetching legacy ranking for server ${serverId}:`, error as Error);
     return [];
   }
 }
 
 /**
- * Obtém a contagem de zoadas que um usuário recebeu
- * @param userId ID do usuário
- * @param serverId ID do servidor
- * @returns Número de vezes que o usuário foi zoado
+ * Gets the number of times a user has been mocked
+ * @param userId ID of the user
+ * @param serverId ID of the server
+ * @returns Number of times the user was mocked
  */
 export async function getCountForUser(userId: string, serverId: string): Promise<number> {
   try {
     const record = await Ranking.findOne({ userId, serverId }).select('count').lean();
     return record?.count || 0;
   } catch (error) {
-    logger.error(`Erro ao buscar contagem para usuário ${userId}:`, error as Error);
+    logger.error(`Error fetching count for user ${userId}:`, error as Error);
     return 0;
   }
 }
 
 /**
- * Obtém o número de alvos únicos que um usuário zoou ou apelidou
- * @param userId ID do usuário que fez a ação
- * @param serverId ID do servidor
- * @param actionType Tipo de ação (zoar ou apelido)
- * @returns Número de alvos únicos
+ * Gets the number of unique targets a user has mocked or nicknamed
+ * @param userId ID of the user who performed the action
+ * @param serverId ID of the server
+ * @param actionType Type of action (mock or nickname)
+ * @returns Number of unique targets
  */
 export async function getUniqueTargetsCount(
   userId: string,
   serverId: string,
-  actionType: 'zoar' | 'apelido' = 'zoar'
+  actionType: 'mock' | 'nickname' = 'mock'
 ): Promise<number> {
   try {
-    const field = actionType === 'zoar' ? 'uniqueTargets' : 'uniqueApelidos';
+    const field = actionType === 'mock' ? 'uniqueTargets' : 'uniqueNicknames';
     const record = await Ranking.findOne({ userId, serverId }).select(field).lean();
 
     if (!record || !record[field]) {
@@ -154,7 +156,7 @@ export async function getUniqueTargetsCount(
 
     return record[field].length;
   } catch (error) {
-    logger.error(`Erro ao buscar alvos únicos para usuário ${userId}:`, error as Error);
+    logger.error(`Error fetching unique targets for user ${userId}:`, error as Error);
     return 0;
   }
 }

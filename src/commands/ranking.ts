@@ -10,7 +10,7 @@ export default {
 
   async execute(interaction: ChatInputCommandInteraction) {
     try {
-      // Verifica se é um servidor
+      // Check if it's a server
       if (!interaction.guild || !interaction.guildId) {
         return await interaction.reply({
           content: t('errors.server_only'),
@@ -18,10 +18,10 @@ export default {
         });
       }
 
-      // Busca o ranking - usando a função de compatibilidade que retorna [userId, count]
+      // Search the ranking - using the compatibility function that returns [userId, count]
       const ranking = await getTopRankingLegacy(interaction.guildId, 10);
 
-      // Se não tiver dados no ranking
+      // If there is no data in the ranking
       if (!ranking || ranking.length === 0) {
         return await interaction.reply({
           content: t('commands.ranking.empty'),
@@ -29,26 +29,26 @@ export default {
         });
       }
 
-      // Formata o ranking como texto para o embed
+      // Format the ranking as text for the embed
       let rankingText = '';
 
       try {
-        // Para cada entrada do ranking
+        // For each entry in the ranking
         for (let i = 0; i < ranking.length; i++) {
           const [userId, count] = ranking[i];
 
           try {
-            // Tenta buscar o usuário no Discord
+            // Try to fetch the user in Discord
             const user = await interaction.client.users.fetch(userId);
 
-            // Adiciona a linha formatada
+            // Add the formatted line
             rankingText += `**${i + 1}.** ${user.username}: **${count}** ${
               count === 1
                 ? t('commands.ranking.action_name')
                 : t('commands.ranking.action_name_plural')
             }\n`;
           } catch (error) {
-            // Se não conseguir buscar o usuário
+            // If it's not possible to fetch the user
             rankingText += `**${i + 1}.** ${t('commands.ranking.unknown_user')}: **${count}** ${
               count === 1
                 ? t('commands.ranking.action_name')
@@ -61,17 +61,19 @@ export default {
         console.error(error);
       }
 
-      // Mensagens motivacionais para o primeiro colocado
-      const mensagensParaPrimeiro = t('commands.ranking.motivational_messages').split('.,');
+      // Motivational messages for the first place
+      const motivationalMessagesForFirst = t('commands.ranking.motivational_messages').split('.,');
 
-      // Adiciona uma mensagem especial para o primeiro colocado
+      // Add a special message for the first place
       if (ranking.length > 0) {
-        const mensagemAleatoria =
-          mensagensParaPrimeiro[Math.floor(Math.random() * mensagensParaPrimeiro.length)];
-        rankingText += `\n${mensagemAleatoria}`;
+        const randomMessage =
+          motivationalMessagesForFirst[
+            Math.floor(Math.random() * motivationalMessagesForFirst.length)
+          ];
+        rankingText += `\n${randomMessage}`;
       }
 
-      // Cria o embed com estilo do bot
+      // Create the embed with bot style
       const embed = new EmbedBuilder()
         .setColor(BOT_CONFIG.COLORS.DEFAULT)
         .setTitle(`${BOT_CONFIG.ICONS.RANKING} ${t('commands.ranking.embed.title')}`)
@@ -81,10 +83,10 @@ export default {
         })
         .setTimestamp();
 
-      // Responde com o embed
+      // Respond with the embed
       await interaction.reply({ embeds: [embed] });
     } catch (error) {
-      console.error('Erro ao executar comando ranking:', error);
+      console.error('Error executing ranking command:', error);
       await interaction.reply({
         content: t('commands.ranking.error.execute'),
         ephemeral: true,

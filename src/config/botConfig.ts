@@ -1,12 +1,12 @@
 import { ColorResolvable } from 'discord.js';
 
 /**
- * Configurações centralizadas do bot
+ * Centralized bot configuration
  */
 export const BOT_CONFIG = {
-  // Informações básicas do bot
+  // Basic bot information
   NAME: 'Soberaninha',
-  // Cores padrão para embeds
+  // Default colors for embeds
   COLORS: {
     DEFAULT: 'Random' as ColorResolvable,
     WARNING: 'Yellow' as ColorResolvable,
@@ -14,12 +14,12 @@ export const BOT_CONFIG = {
     SUCCESS: 'Green' as ColorResolvable,
   },
 
-  // Ícones para os embeds
+  // Icons for embeds
   ICONS: {
     COOLDOWN: '⏳',
-    ZOAR: '👑',
-    HUMILHAR: '💀',
-    APELIDO: '🎯',
+    MOCK: '👑',
+    HUMILIATE: '💀',
+    NICKNAME: '🎯',
     RANKING: '🏆',
     ERROR: '❌',
     SUCCESS: '✅',
