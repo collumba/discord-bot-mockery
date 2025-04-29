@@ -1,5 +1,5 @@
 import { Events, Client } from 'discord.js';
-import { client } from '../config/client.js';
+import { client } from '../config/client';
 
 // Exporta uma função que registra o evento ready
 export default () => {

@@ -1,12 +1,7 @@
 import { Client, Collection, Events, Interaction } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-import logger from '../utils/logger.js';
-
-// Obter o caminho do diretório atual com ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import logger from '../utils/logger';
 
 // Tipo para os comandos
 interface Command {
@@ -30,8 +25,7 @@ class CommandHandler {
     for (const file of commandFiles) {
       const filePath = path.join(commandsPath, file);
       try {
-        const commandModule = await import(filePath);
-        const command = commandModule.default;
+        const command = require(filePath).default;
         
         if ('data' in command && 'execute' in command) {
           this.commands.set(command.data.name, command);
