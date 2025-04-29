@@ -118,6 +118,12 @@
         "success": "✅ Mensagem personalizada enviada com sucesso!",
         "error": "❌ Erro ao enviar mensagem personalizada. Tente novamente mais tarde."
       },
+      "voice": {
+        "name": "callto-voice",
+        "description": "Convida todos para conversar no canal de voz",
+        "success": "✅ Convite para conversar no canal de voz enviado com sucesso!",
+        "error": "❌ Erro ao enviar convite para o canal de voz. Tente novamente mais tarde."
+      },
       "titles": {
         "play": "🎮 Let's Play!",
         "chat": "💬 Let's Chat!",

@@ -87,26 +87,25 @@ export async function startCallTo(
   customText?: string
 ): Promise<boolean> {
   try {
-    // Configuração do embed baseado no tipo
-    let title = '';
+    // Determinando o prefixo do tipo de mensagem
+    let prefix = '';
     let phrases: string[] = [];
-    let color: ColorResolvable = BOT_CONFIG.COLORS.DEFAULT;
 
     switch (type) {
       case 'play':
-        title = t('commands.callto.titles.play');
+        prefix = '🎮 '; // Emoji para jogar
         phrases = t('services.callTo.play').split('.,');
         break;
       case 'chat':
-        title = t('commands.callto.titles.chat');
+        prefix = '💬 '; // Emoji para conversar
         phrases = t('services.callTo.chat').split('.,');
         break;
       case 'event':
-        title = t('commands.callto.titles.event');
+        prefix = '🏆 '; // Emoji para evento
         phrases = t('services.callTo.event').split('.,');
         break;
       case 'custom':
-        title = t('commands.callto.titles.custom');
+        prefix = '📣 '; // Emoji para anúncio
         if (!customText) {
           logger.error('Custom CallTo requires customText parameter');
           return false;
@@ -123,17 +122,9 @@ export async function startCallTo(
         ? customText || 'Custom message' // Garantir que nunca será undefined
         : phrases[Math.floor(Math.random() * phrases.length)];
 
-    // Criar e enviar o embed
-    const embed = new EmbedBuilder()
-      .setColor(color)
-      .setTitle(title)
-      .setDescription(phrase)
-      .setFooter({
-        text: t('footer', { botName: BOT_CONFIG.NAME }),
-      })
-      .setTimestamp();
-
-    await channel.send({ embeds: [embed] });
+    // Criar e enviar a mensagem de texto simples
+    const message = `${prefix}${phrase}`;
+    await channel.send(message);
 
     logger.info(`CallTo sent to channel ${channel.name} (${channel.id}) with type ${type}`);
     return true;
