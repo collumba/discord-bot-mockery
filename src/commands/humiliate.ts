@@ -44,7 +44,10 @@ export default {
     }
 
     const members = await interaction.guild.members.fetch();
-    const filteredMembers = members.filter((m) => !m.user.bot);
+    // Filter out bots and the bot itself
+    const filteredMembers = members.filter(
+      (m) => !m.user.bot && m.user.id !== interaction.client.user?.id
+    );
 
     if (filteredMembers.size === 0) {
       return interaction.reply({
@@ -70,7 +73,7 @@ export default {
 
     // Select a random phrase and replace placeholders
     const basePhrase = humiliationPhrases[Math.floor(Math.random() * humiliationPhrases.length)];
-    const phrase = basePhrase.replace(/{username}/g, `@${randomMember.user.username}`);
+    const phrase = basePhrase.replace(/{username}/g, `<@${randomMember.user.id}>`);
 
     const embed = new EmbedBuilder()
       .setColor(BOT_CONFIG.COLORS.DEFAULT)

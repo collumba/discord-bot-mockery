@@ -39,6 +39,14 @@ export default {
       return interaction.reply({ content: t('errors.user_not_found'), ephemeral: true });
     }
 
+    // Prevent selecting the bot itself
+    if (user.id === interaction.client.user?.id) {
+      return interaction.reply({
+        content: t('errors.no_valid_members'),
+        ephemeral: true,
+      });
+    }
+
     incrementUser(user.id, interaction.guildId!, interaction.user.id, 'nickname');
     registerCooldown(interaction.user.id, 'nickname', 15);
 
