@@ -7,13 +7,14 @@ import {
 import { incrementUser } from '../services/rankingService';
 import cooldownService from '../services/cooldownService';
 import BOT_CONFIG from '../config/botConfig';
+import { t } from '../services/i18nService';
 
 // Configuração do cooldown para o comando zoar (em segundos)
 const COOLDOWN_DURATION = 20;
 
 export default {
   data: new SlashCommandBuilder()
-    .setName('zoar')
+    .setName(t('commands.zoar.name'))
     .setDescription('Zoa um membro do servidor')
     .addUserOption((option) =>
       option.setName('alvo').setDescription('A pessoa que será zoada').setRequired(true)
@@ -27,14 +28,18 @@ export default {
     if (cooldownService.isInCooldown(userId, commandName)) {
       const remainingTime = cooldownService.getRemainingCooldown(userId, commandName);
 
-      // Cria o embed de aviso de cooldown
+      // Cria o embed de aviso de cooldown usando i18n
       const cooldownEmbed = new EmbedBuilder()
         .setColor(BOT_CONFIG.COLORS.WARNING)
-        .setTitle(`${BOT_CONFIG.ICONS.COOLDOWN} Espera um pouco!`)
-        .setDescription(
-          `Você precisa esperar ${remainingTime} segundos para usar /${commandName} de novo.`
+        .setTitle(
+          `${BOT_CONFIG.ICONS.COOLDOWN} ${t('cooldown.wait', {
+            seconds: remainingTime,
+            command: commandName,
+          })}`
         )
-        .setFooter({ text: BOT_CONFIG.FOOTER_TEXT })
+        .setFooter({
+          text: t('footer', { botName: BOT_CONFIG.NAME }),
+        })
         .setTimestamp();
 
       // Responde com o aviso (ephemeral para não poluir o chat)
@@ -46,7 +51,7 @@ export default {
 
     if (!alvo) {
       return await interaction.reply({
-        content: 'Você precisa mencionar alguém para zoar!',
+        content: t('errors.user_not_found'),
         ephemeral: true,
       });
     }
@@ -54,7 +59,7 @@ export default {
     // Verifica se o comando está sendo usado em um servidor
     if (!interaction.guildId) {
       return await interaction.reply({
-        content: 'Este comando só pode ser usado em servidores!',
+        content: t('errors.server_only'),
         ephemeral: true,
       });
     }
@@ -62,32 +67,26 @@ export default {
     // Registra o cooldown para o usuário
     cooldownService.registerCooldown(userId, commandName, COOLDOWN_DURATION);
 
-    // Incrementa no ranking do MongoDB - note o await e o serverId adicionado
+    // Incrementa no ranking do MongoDB
     await incrementUser(alvo.id, interaction.guildId);
 
-    // Lista de frases zoeiras (adicione mais conforme necessário)
-    const frasesZoeiras = [
-      `${alvo} tá jogando tão mal que até os bots do tutorial têm pena.`,
-      `Todo mundo erra, mas ${alvo} eleva isso a uma arte.`,
-      `${alvo} é o tipo de pessoa que morre pro tutorial.`,
-      `${alvo} tá tão ruim hoje que seria kickado de um jogo single-player.`,
-      `${alvo} tem tanto talento que até o auto-aim desiste.`,
-      `Os NPCs entram em modo fácil quando veem ${alvo} chegando.`,
-      `${alvo} é aquele que compra skin pra morrer mais bonito.`,
-      `Dizem que ${alvo} já zerou o LoL. Morreu de todas as formas possíveis.`,
-      `As estatísticas de ${alvo} são tão ruins que a Steam sugere jogar Candy Crush.`,
-      `${alvo} é tão azarado que até bug acontece só com ele.`,
-    ];
+    // Obtém as frases zoeiras do arquivo de tradução
+    const frasesZoeiras = t('commands.zoar.phrases').split('.,');
 
     // Seleciona uma frase aleatória
     const fraseEscolhida = frasesZoeiras[Math.floor(Math.random() * frasesZoeiras.length)];
 
-    // Cria o embed com estilo do bot
+    // Processa os placeholders na frase
+    const fraseProcessada = t('', { alvo: alvo.toString() }).replace('{}', fraseEscolhida);
+
+    // Cria o embed com estilo do bot usando i18n
     const embed = new EmbedBuilder()
       .setColor(BOT_CONFIG.COLORS.DEFAULT)
-      .setTitle(`${BOT_CONFIG.ICONS.ZOAR} Zoação Realizada!`)
-      .setDescription(fraseEscolhida)
-      .setFooter({ text: BOT_CONFIG.FOOTER_TEXT })
+      .setTitle(`${BOT_CONFIG.ICONS.ZOAR} ${t('commands.zoar.title')}`)
+      .setDescription(fraseProcessada)
+      .setFooter({
+        text: t('footer', { botName: BOT_CONFIG.NAME }),
+      })
       .setTimestamp();
 
     // Responde com o embed

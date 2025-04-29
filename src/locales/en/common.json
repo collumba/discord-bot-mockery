@@ -1,0 +1,63 @@
+{
+  "errors": {
+    "permission_denied": "You don't have permission to use this command.",
+    "server_only": "This command only works in servers.",
+    "user_not_found": "I couldn't find that user.",
+    "no_valid_members": "Couldn't find a valid member.",
+    "no_members_to_insult": "No one to roast at the moment."
+  },
+  "cooldown": {
+    "wait": "⏳ Please wait! You need to wait **{seconds} seconds** before using {command} again."
+  },
+  "commands": {
+    "zoar": {
+      "title": "👑 Roast Successful!",
+      "phrases": [
+        "{alvo} is playing so badly that even tutorial bots feel sorry.",
+        "Everyone makes mistakes, but {alvo} turns it into an art form.",
+        "{alvo} is the type of person that dies in the tutorial.",
+        "{alvo} is playing so badly today they'd be kicked from a single-player game.",
+        "{alvo} has so much talent that even auto-aim gives up.",
+        "NPCs switch to easy mode when they see {alvo} coming.",
+        "{alvo} is the one who buys skins just to die more beautifully.",
+        "They say {alvo} has completed LoL - died in every possible way.",
+        "{alvo}'s stats are so bad that Steam suggests playing Candy Crush instead.",
+        "{alvo} is so unlucky that bugs only happen to them."
+      ]
+    },
+    "humilhar": {
+      "title": "💀 Public Humiliation!",
+      "phrases": [
+        "{username} is living proof that breathing is automatic.",
+        "{username} confuses healing skills with damage skills.",
+        "{username} has disconnected in the tutorial.",
+        "{username} is considered an NPC by their own team.",
+        "{username} is so bad that even bots avoid them."
+      ]
+    },
+    "apelido": {
+      "title": "🎯 New Nickname Found!",
+      "success": "{username} is now known as **{apelido}**!",
+      "nicknames": [
+        "LagLord",
+        "BugMaster",
+        "Noobzilla",
+        "Crasher",
+        "Official Feeder",
+        "Respawn King"
+      ]
+    }
+  },
+  "ranking": {
+    "title": "🏆 Most Roasted Ranking",
+    "empty": "There's no one in the ranking yet. Start roasting!",
+    "motivational_messages": [
+      "🎖️ Congratulations on being the most roasted! What an achievement, huh?",
+      "🏆 The title of \"Most Roasted\" is yours by your own merit!",
+      "💯 Being the most roasted requires special talent... or a complete lack of it!",
+      "🌟 Nobody gets roasted like you do. It's a gift!",
+      "🔥 The trophy for \"Best Roasting Target\" goes to you!"
+    ]
+  },
+  "footer": "by {botName} 👑"
+}

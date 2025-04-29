@@ -4,6 +4,7 @@ import loadEvents from './services/eventHandler';
 import commandHandler from './services/commandHandler';
 import { connectMongo } from './database/mongo';
 import logger from './utils/logger';
+import { initI18n } from './services/i18nService';
 
 // Carrega as variáveis de ambiente
 config();
@@ -19,6 +20,10 @@ const client = new Client({
 
 (async () => {
   try {
+    // Inicializar serviço de i18n
+    logger.info('Inicializando serviço de internacionalização...');
+    initI18n(['pt', 'en']);
+
     // Conectar ao MongoDB
     logger.info('Iniciando conexão com MongoDB...');
     await connectMongo();

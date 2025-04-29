@@ -1,0 +1,73 @@
+{
+  "errors": {
+    "permission_denied": "Você não tem permissão para usar este comando.",
+    "server_only": "Esse comando só funciona em servidores.",
+    "user_not_found": "Não encontrei esse usuário.",
+    "no_valid_members": "Não foi possível encontrar um membro válido.",
+    "no_members_to_insult": "Ninguém para humilhar no momento."
+  },
+  "cooldown": {
+    "wait": "⏳ Espera um pouco! Você precisa esperar **{seconds} segundos** para usar {command} novamente."
+  },
+  "commands": {
+    "zoar": {
+      "name": "zoar",
+      "title": "👑 Zoação Realizada!",
+      "phrases": [
+        "{alvo} tá jogando tão mal que até os bots do tutorial têm pena.",
+        "Todo mundo erra, mas {alvo} eleva isso a uma arte.",
+        "{alvo} é o tipo de pessoa que morre pro tutorial.",
+        "{alvo} tá tão ruim hoje que seria kickado de um jogo single-player.",
+        "{alvo} tem tanto talento que até o auto-aim desiste.",
+        "Os NPCs entram em modo fácil quando veem {alvo} chegando.",
+        "{alvo} é aquele que compra skin pra morrer mais bonito.",
+        "Dizem que {alvo} já zerou o LoL. Morreu de todas as formas possíveis.",
+        "As estatísticas de {alvo} são tão ruins que a Steam sugere jogar Candy Crush.",
+        "{alvo} é tão azarado que até bug acontece só com ele."
+      ],
+      "builder": {
+        "description": "Zoa um membro do servidor",
+        "options": [
+          {
+            "name": "alvo",
+            "description": "A pessoa que será zoada"
+          }
+        ]
+      }
+    },
+    "humilhar": {
+      "title": "💀 Humilhação Pública!",
+      "phrases": [
+        "{username} é a prova viva que respiração é automática.",
+        "{username} confunde skill de cura com skill de dano.",
+        "{username} já tomou DC no tutorial.",
+        "{username} é considerado NPC pelo próprio time.",
+        "{username} é tão ruim que até os bots evitam."
+      ]
+    },
+    "apelido": {
+      "title": "🎯 Novo Apelido Encontrado!",
+      "success": "{username} agora é conhecido como **{apelido}**!",
+      "nicknames": [
+        "LagLord",
+        "BugMaster",
+        "Noobzera",
+        "Crashador",
+        "Feedador Oficial",
+        "Rei do Respawn"
+      ]
+    }
+  },
+  "ranking": {
+    "title": "🏆 Ranking dos Mais Zoados",
+    "empty": "Ainda não há ninguém no ranking. Comece a zoar!",
+    "motivational_messages": [
+      "🎖️ Parabéns por ser o mais zoado! Que conquista, hein?",
+      "🏆 O título de \"Mais Zoado\" é seu por mérito próprio!",
+      "💯 Ser o mais zoado requer talento especial... ou muita falta dele!",
+      "🌟 Ninguém consegue ser zoado como você. É um dom!",
+      "🔥 O troféu de \"Melhor Alvo de Zoações\" vai para você!"
+    ]
+  },
+  "footer": "by {botName} 👑"
+}
