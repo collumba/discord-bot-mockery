@@ -1,30 +1,35 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import BOT_CONFIG from '../config/botConfig';
+import { t } from '../services/i18nService';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('desafiar')
-    .setDescription('Desafia um usuário aleatório para um duelo!')
+    .setDescription(t('commands.desafiar.builder.description'))
     .addUserOption((option) =>
-      option.setName('user').setDescription('Usuário para desafiar').setRequired(true)
+      option
+        .setName('user')
+        .setDescription(t('commands.desafiar.builder.options.user'))
+        .setRequired(true)
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
     const user = interaction.options.getUser('user');
 
     if (!user) {
-      return interaction.reply({ content: 'Não encontrei esse usuário.', ephemeral: true });
+      return interaction.reply({ content: t('errors.user_not_found'), ephemeral: true });
     }
 
-    const desafios = [
-      `@${user.username}, você foi desafiado para uma batalha de memes! Quem perde vira o tiozão do grupo.`,
-      `@${user.username}, aceitas um X1 de argumentos ruins?`,
-      `@${user.username}, hora de provar quem é o maior noob do servidor.`,
-      `@${user.username}, seu 1v1 foi requisitado pela ${BOT_CONFIG.NAME}. Boa sorte, vai precisar.`,
-      `@${user.username}, duelo de quem faz mais vergonha em público!`,
-    ];
+    // Get phrases and split into array since they're joined with .,
+    const desafiosArray = t('commands.desafiar.phrases').split('.,');
 
-    const desafio = desafios[Math.floor(Math.random() * desafios.length)];
+    // Choose a random phrase
+    const desafioBase = desafiosArray[Math.floor(Math.random() * desafiosArray.length)];
+
+    // Replace placeholders
+    const desafio = desafioBase
+      .replace(/@username/g, `@${user.username}`)
+      .replace(/{botName}/g, BOT_CONFIG.NAME);
 
     await interaction.reply(desafio);
   },

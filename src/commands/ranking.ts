@@ -1,18 +1,19 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { getTopRankingLegacy } from '../services/rankingService';
 import BOT_CONFIG from '../config/botConfig';
+import { t } from '../services/i18nService';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('ranking')
-    .setDescription('Mostra o ranking dos membros mais zoados'),
+    .setDescription(t('commands.ranking.builder.description')),
 
   async execute(interaction: ChatInputCommandInteraction) {
     try {
       // Verifica se é um servidor
       if (!interaction.guild || !interaction.guildId) {
         return await interaction.reply({
-          content: 'Este comando só pode ser usado em servidores!',
+          content: t('errors.server_only'),
           ephemeral: true,
         });
       }
@@ -23,7 +24,7 @@ export default {
       // Se não tiver dados no ranking
       if (!ranking || ranking.length === 0) {
         return await interaction.reply({
-          content: 'Ainda não há ninguém no ranking dos zoados!',
+          content: t('commands.ranking.empty'),
           ephemeral: true,
         });
       }
@@ -31,36 +32,37 @@ export default {
       // Formata o ranking como texto para o embed
       let rankingText = '';
 
-      // Para cada membro no top 10
-      for (let i = 0; i < ranking.length && i < 10; i++) {
-        try {
+      try {
+        // Para cada entrada do ranking
+        for (let i = 0; i < ranking.length; i++) {
           const [userId, count] = ranking[i];
 
-          // Tenta buscar o membro do servidor
-          const member = await interaction.guild.members.fetch(userId).catch(() => null);
+          try {
+            // Tenta buscar o usuário no Discord
+            const user = await interaction.client.users.fetch(userId);
 
-          // Adiciona na lista formatada
-          if (member) {
-            const medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
-            rankingText += `${medalha} ${member} - **${count}** zoeiras\n`;
-          } else {
-            // Usuário não encontrado no servidor
-            rankingText += `${i + 1}. Usuário desconhecido - **${count}** zoeiras\n`;
+            // Adiciona a linha formatada
+            rankingText += `**${i + 1}.** ${user.username}: **${count}** ${
+              count === 1
+                ? t('commands.ranking.action_name')
+                : t('commands.ranking.action_name_plural')
+            }\n`;
+          } catch (error) {
+            // Se não conseguir buscar o usuário
+            rankingText += `**${i + 1}.** ${t('commands.ranking.unknown_user')}: **${count}** ${
+              count === 1
+                ? t('commands.ranking.action_name')
+                : t('commands.ranking.action_name_plural')
+            }\n`;
+            console.error(t('commands.ranking.error.process', { error }));
           }
-        } catch (error) {
-          console.error(`Erro ao processar usuário no ranking: ${error}`);
-          continue;
         }
+      } catch (error) {
+        console.error(error);
       }
 
       // Mensagens motivacionais para o primeiro colocado
-      const mensagensParaPrimeiro = [
-        '🎖️ Parabéns por ser o mais zoado! Que conquista, hein?',
-        '🏆 O título de "Mais Zoado" é seu por mérito próprio!',
-        '💯 Ser o mais zoado requer talento especial... ou muita falta dele!',
-        '🌟 Ninguém consegue ser zoado como você. É um dom!',
-        '🔥 O troféu de "Melhor Alvo de Zoações" vai para você!',
-      ];
+      const mensagensParaPrimeiro = t('commands.ranking.motivational_messages').split('.,');
 
       // Adiciona uma mensagem especial para o primeiro colocado
       if (ranking.length > 0) {
@@ -71,10 +73,12 @@ export default {
 
       // Cria o embed com estilo do bot
       const embed = new EmbedBuilder()
-        .setColor('Random')
-        .setTitle('🏆 Ranking dos Mais Zoados')
+        .setColor(BOT_CONFIG.COLORS.DEFAULT)
+        .setTitle(t('commands.ranking.embed.title'))
         .setDescription(rankingText)
-        .setFooter({ text: `by ${BOT_CONFIG.NAME} 👑` })
+        .setFooter({
+          text: t('commands.ranking.embed.footer', { botName: BOT_CONFIG.NAME }),
+        })
         .setTimestamp();
 
       // Responde com o embed
@@ -82,7 +86,7 @@ export default {
     } catch (error) {
       console.error('Erro ao executar comando ranking:', error);
       await interaction.reply({
-        content: 'Ocorreu um erro ao buscar o ranking!',
+        content: t('commands.ranking.error.execute'),
         ephemeral: true,
       });
     }

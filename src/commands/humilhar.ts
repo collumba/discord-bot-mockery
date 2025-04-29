@@ -8,7 +8,7 @@ import { t } from '../services/i18nService';
 export default {
   data: new SlashCommandBuilder()
     .setName('humilhar')
-    .setDescription('Escolhe alguém aleatório para zoar.'),
+    .setDescription(t('commands.humilhar.builder.description')),
 
   async execute(interaction: ChatInputCommandInteraction) {
     if (!canExecute(interaction)) {

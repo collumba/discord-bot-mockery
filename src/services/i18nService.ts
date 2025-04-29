@@ -4,7 +4,7 @@ import logger from '../utils/logger';
 
 // Type for translation objects
 interface TranslationDictionary {
-  [key: string]: string;
+  [key: string]: string | string[] | TranslationDictionary;
 }
 
 // Object to store loaded translations
@@ -74,6 +74,26 @@ function replacePlaceholders(text: string, replacements?: Record<string, any>): 
 }
 
 /**
+ * Get a value from a nested object using a dot notation path
+ * @param obj The object to search in
+ * @param path The dot notation path, e.g. "commands.zoar.title"
+ * @returns The value found or undefined
+ */
+function getNestedValue(obj: any, path: string): any {
+  const keys = path.split('.');
+  let current = obj;
+
+  for (const key of keys) {
+    if (current === undefined || current === null) {
+      return undefined;
+    }
+    current = current[key];
+  }
+
+  return current;
+}
+
+/**
  * Get translation for a specific key
  * @param key Translation key (e.g. 'commands.zoar.success')
  * @param lang Language code (defaults to 'pt')
@@ -82,29 +102,49 @@ function replacePlaceholders(text: string, replacements?: Record<string, any>): 
  */
 export function t(
   key: string,
-  placeholders?: Record<string, any>,
-  lang: string = DEFAULT_LANG
+  langOrPlaceholders?: string | Record<string, any>,
+  placeholders?: Record<string, any>
 ): string {
+  // Handle overloaded function signature
+  let lang = DEFAULT_LANG;
+  let actualPlaceholders = placeholders;
+
+  if (typeof langOrPlaceholders === 'string') {
+    lang = langOrPlaceholders;
+  } else if (langOrPlaceholders && typeof langOrPlaceholders === 'object') {
+    actualPlaceholders = langOrPlaceholders;
+  }
+
+  // Empty key is just for placeholder processing
+  if (!key) {
+    return '';
+  }
+
   // Try to load the language if not already loaded
   if (!translations[lang] && !loadTranslations(lang)) {
     // If loading fails and it's not the default language, try to use default
     if (lang !== DEFAULT_LANG) {
       logger.warn(`i18n: Falling back to ${DEFAULT_LANG} for language ${lang}`);
-      return t(key, placeholders, lang);
+      return t(key, DEFAULT_LANG, actualPlaceholders);
     }
   }
 
-  // Get translation
-  const translation = translations[lang]?.[key];
+  // Get translation using nested path
+  const translation = getNestedValue(translations[lang], key);
 
-  // If translation doesn't exist
-  if (!translation) {
+  // If translation is an array, join it with newlines
+  if (Array.isArray(translation)) {
+    return translation.join('.,');
+  }
+
+  // If translation doesn't exist or isn't a string
+  if (typeof translation !== 'string') {
     // Try default language if not already using it
     if (lang !== DEFAULT_LANG) {
       logger.warn(
         `i18n: Key "${key}" not found in language ${lang}, falling back to ${DEFAULT_LANG}`
       );
-      return t(key, placeholders, DEFAULT_LANG);
+      return t(key, DEFAULT_LANG, actualPlaceholders);
     }
 
     // No translation found even in default language, return the key itself
@@ -113,7 +153,7 @@ export function t(
   }
 
   // Replace placeholders and return the translation
-  return replacePlaceholders(translation, placeholders);
+  return replacePlaceholders(translation, actualPlaceholders);
 }
 
 /**

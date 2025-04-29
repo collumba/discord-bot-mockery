@@ -29,7 +29,8 @@
   },
   "tools": {
     "environment_variables": "use dotenv",
-    "formatting": "ESLint and Prettier configured"
+    "formatting": "ESLint and Prettier configured",
+    "i18n": "use i18nService"
   },
   "response_style": {
     "completeness": "generate full code examples with filenames and paths",

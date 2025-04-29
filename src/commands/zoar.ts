@@ -14,10 +14,13 @@ const COOLDOWN_DURATION = 20;
 
 export default {
   data: new SlashCommandBuilder()
-    .setName(t('commands.zoar.name'))
-    .setDescription('Zoa um membro do servidor')
+    .setName('zoar')
+    .setDescription(t('commands.zoar.builder.description'))
     .addUserOption((option) =>
-      option.setName('alvo').setDescription('A pessoa que será zoada').setRequired(true)
+      option
+        .setName('alvo')
+        .setDescription(t('commands.zoar.builder.options.alvo'))
+        .setRequired(true)
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
@@ -77,7 +80,7 @@ export default {
     const fraseEscolhida = frasesZoeiras[Math.floor(Math.random() * frasesZoeiras.length)];
 
     // Processa os placeholders na frase
-    const fraseProcessada = t('', { alvo: alvo.toString() }).replace('{}', fraseEscolhida);
+    const fraseProcessada = fraseEscolhida.replace(/{alvo}/g, alvo.toString());
 
     // Cria o embed com estilo do bot usando i18n
     const embed = new EmbedBuilder()

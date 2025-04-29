@@ -1,63 +1,124 @@
 {
   "errors": {
-    "permission_denied": "You don't have permission to use this command.",
-    "server_only": "This command only works in servers.",
-    "user_not_found": "I couldn't find that user.",
-    "no_valid_members": "Couldn't find a valid member.",
-    "no_members_to_insult": "No one to roast at the moment."
+    "permission_denied": "Você não tem permissão para usar este comando.",
+    "server_only": "Esse comando só funciona em servidores.",
+    "user_not_found": "Não encontrei esse usuário.",
+    "no_valid_members": "Não foi possível encontrar um membro válido.",
+    "no_members_to_insult": "Ninguém para humilhar no momento."
   },
   "cooldown": {
-    "wait": "⏳ Please wait! You need to wait **{seconds} seconds** before using {command} again."
+    "wait": "⏳ Espera um pouco! Você precisa esperar **{seconds} segundos** para usar {command} novamente."
   },
   "commands": {
     "zoar": {
-      "title": "👑 Roast Successful!",
+      "name": "zoar",
+      "title": "👑 Zoação Realizada!",
+      "builder": {
+        "description": "Zoa um membro do servidor",
+        "options": {
+          "alvo": "A pessoa que será zoada"
+        }
+      },
       "phrases": [
-        "{alvo} is playing so badly that even tutorial bots feel sorry.",
-        "Everyone makes mistakes, but {alvo} turns it into an art form.",
-        "{alvo} is the type of person that dies in the tutorial.",
-        "{alvo} is playing so badly today they'd be kicked from a single-player game.",
-        "{alvo} has so much talent that even auto-aim gives up.",
-        "NPCs switch to easy mode when they see {alvo} coming.",
-        "{alvo} is the one who buys skins just to die more beautifully.",
-        "They say {alvo} has completed LoL - died in every possible way.",
-        "{alvo}'s stats are so bad that Steam suggests playing Candy Crush instead.",
-        "{alvo} is so unlucky that bugs only happen to them."
+        "{alvo} tá jogando tão mal que até os bots do tutorial têm pena.",
+        "Todo mundo erra, mas {alvo} eleva isso a uma arte.",
+        "{alvo} é o tipo de pessoa que morre pro tutorial.",
+        "{alvo} tá tão ruim hoje que seria kickado de um jogo single-player.",
+        "{alvo} tem tanto talento que até o auto-aim desiste.",
+        "Os NPCs entram em modo fácil quando veem {alvo} chegando.",
+        "{alvo} é aquele que compra skin pra morrer mais bonito.",
+        "Dizem que {alvo} já zerou o LoL. Morreu de todas as formas possíveis.",
+        "As estatísticas de {alvo} são tão ruins que a Steam sugere jogar Candy Crush.",
+        "{alvo} é tão azarado que até bug acontece só com ele."
       ]
     },
     "humilhar": {
-      "title": "💀 Public Humiliation!",
+      "title": "💀 Humilhação Pública!",
+      "builder": {
+        "description": "Escolhe alguém aleatório para zoar."
+      },
       "phrases": [
-        "{username} is living proof that breathing is automatic.",
-        "{username} confuses healing skills with damage skills.",
-        "{username} has disconnected in the tutorial.",
-        "{username} is considered an NPC by their own team.",
-        "{username} is so bad that even bots avoid them."
+        "{username} é a prova viva que respiração é automática.",
+        "{username} confunde skill de cura com skill de dano.",
+        "{username} já tomou DC no tutorial.",
+        "{username} é considerado NPC pelo próprio time.",
+        "{username} é tão ruim que até os bots evitam."
       ]
     },
     "apelido": {
-      "title": "🎯 New Nickname Found!",
-      "success": "{username} is now known as **{apelido}**!",
+      "title": "🎯 Novo Apelido Encontrado!",
+      "builder": {
+        "description": "Sugere um apelido engraçado para alguém.",
+        "options": {
+          "user": "Usuário para apelidar"
+        }
+      },
+      "success": "{username} agora é conhecido como **{apelido}**!",
       "nicknames": [
         "LagLord",
         "BugMaster",
-        "Noobzilla",
-        "Crasher",
-        "Official Feeder",
-        "Respawn King"
+        "Noobzera",
+        "Crashador",
+        "Feedador Oficial",
+        "Rei do Respawn"
       ]
     }
   },
   "ranking": {
-    "title": "🏆 Most Roasted Ranking",
-    "empty": "There's no one in the ranking yet. Start roasting!",
+    "title": "🏆 Ranking dos Mais Zoados",
+    "empty": "Ainda não há ninguém no ranking. Comece a zoar!",
+    "builder": {
+      "description": "Mostra o ranking dos membros mais zoados"
+    },
+    "unknown_user": "Usuário desconhecido",
+    "action_name": "zoeira",
+    "action_name_plural": "zoeiras",
     "motivational_messages": [
-      "🎖️ Congratulations on being the most roasted! What an achievement, huh?",
-      "🏆 The title of \"Most Roasted\" is yours by your own merit!",
-      "💯 Being the most roasted requires special talent... or a complete lack of it!",
-      "🌟 Nobody gets roasted like you do. It's a gift!",
-      "🔥 The trophy for \"Best Roasting Target\" goes to you!"
+      "🎖️ Parabéns por ser o mais zoado! Que conquista, hein?",
+      "🏆 O título de \"Mais Zoado\" é seu por mérito próprio!",
+      "💯 Ser o mais zoado requer talento especial... ou muita falta dele!",
+      "🌟 Ninguém consegue ser zoado como você. É um dom!",
+      "🔥 O troféu de \"Melhor Alvo de Zoações\" vai para você!"
+    ],
+    "error": {
+      "process": "Erro ao processar usuário no ranking: {error}",
+      "execute": "Ocorreu um erro ao buscar o ranking!"
+    },
+    "embed": {
+      "title": "🏆 Ranking dos Mais Zoados",
+      "description": "Ranking dos membros mais zoados",
+      "footer": "by {botName} 👑"
+    }
+  },
+  "desafiar": {
+    "builder": {
+      "description": "Desafia um usuário aleatório para um duelo!",
+      "options": {
+        "user": "Usuário para desafiar"
+      }
+    },
+    "phrases": [
+      "@username, você foi desafiado para uma batalha de memes! Quem perde vira o tiozão do grupo.",
+      "@username, aceitas um X1 de argumentos ruins?",
+      "@username, hora de provar quem é o maior noob do servidor.",
+      "@username, seu 1v1 foi requisitado pela {botName}. Boa sorte, vai precisar.",
+      "@username, duelo de quem faz mais vergonha em público!"
     ]
+  },
+  "frasealeatoria": {
+    "builder": {
+      "description": "Solta uma frase aleatória da zoeira da {botName}."
+    },
+    "phrases": [
+      "Quem nunca caiu do servidor que atire o primeiro lag!",
+      "A {botName} viu sua gameplay... e preferiu esquecer.",
+      "Se seu jogo tivesse física real, você nem andava direito.",
+      "Com essa mira, era melhor jogar adivinhação."
+    ]
+  },
+  "ping": {
+    "description": "Responde com Pong! 🏓",
+    "response": "Pong! 🏓"
   },
   "footer": "by {botName} 👑"
 }

@@ -1,21 +1,21 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import BOT_CONFIG from '../config/botConfig';
+import { t } from '../services/i18nService';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('frasealeatoria')
-    .setDescription(`Solta uma frase aleatória da zoeira da ${BOT_CONFIG.NAME}.`),
+    .setDescription(t('commands.frasealeatoria.builder.description', { botName: BOT_CONFIG.NAME })),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    const frases = [
-      'Quem nunca caiu do servidor que atire o primeiro lag!',
-      `A ${BOT_CONFIG.NAME} viu s ua gameplay... e preferiu esquecer.`,
-      'Se seu jogo tivesse física real, você nem andava direito.',
-      'Com essa mira, era melhor jogar adivinhação.',
-      'Se habilidade fosse loot, você estaria sem inventário.',
-    ];
+    // Get phrases and split into array since they're joined with .,
+    const frasesArray = t('commands.frasealeatoria.phrases').split('.,');
 
-    const frase = frases[Math.floor(Math.random() * frases.length)];
+    // Choose a random phrase
+    const fraseBase = frasesArray[Math.floor(Math.random() * frasesArray.length)];
+
+    // Replace placeholders
+    const frase = fraseBase.replace(/{botName}/g, BOT_CONFIG.NAME);
 
     await interaction.reply(frase);
   },

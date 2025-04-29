@@ -13,6 +13,12 @@
     "zoar": {
       "name": "zoar",
       "title": "👑 Zoação Realizada!",
+      "builder": {
+        "description": "Zoa um membro do servidor",
+        "options": {
+          "alvo": "A pessoa que será zoada"
+        }
+      },
       "phrases": [
         "{alvo} tá jogando tão mal que até os bots do tutorial têm pena.",
         "Todo mundo erra, mas {alvo} eleva isso a uma arte.",
@@ -24,19 +30,13 @@
         "Dizem que {alvo} já zerou o LoL. Morreu de todas as formas possíveis.",
         "As estatísticas de {alvo} são tão ruins que a Steam sugere jogar Candy Crush.",
         "{alvo} é tão azarado que até bug acontece só com ele."
-      ],
-      "builder": {
-        "description": "Zoa um membro do servidor",
-        "options": [
-          {
-            "name": "alvo",
-            "description": "A pessoa que será zoada"
-          }
-        ]
-      }
+      ]
     },
     "humilhar": {
       "title": "💀 Humilhação Pública!",
+      "builder": {
+        "description": "Escolhe alguém aleatório para zoar."
+      },
       "phrases": [
         "{username} é a prova viva que respiração é automática.",
         "{username} confunde skill de cura com skill de dano.",
@@ -47,6 +47,12 @@
     },
     "apelido": {
       "title": "🎯 Novo Apelido Encontrado!",
+      "builder": {
+        "description": "Sugere um apelido engraçado para alguém.",
+        "options": {
+          "user": "Usuário para apelidar"
+        }
+      },
       "success": "{username} agora é conhecido como **{apelido}**!",
       "nicknames": [
         "LagLord",
@@ -56,18 +62,63 @@
         "Feedador Oficial",
         "Rei do Respawn"
       ]
+    },
+    "desafiar": {
+      "builder": {
+        "description": "Desafia um usuário aleatório para um duelo!",
+        "options": {
+          "user": "Usuário para desafiar"
+        }
+      },
+      "phrases": [
+        "@username, você foi desafiado para uma batalha de memes! Quem perde vira o tiozão do grupo.",
+        "@username, aceitas um X1 de argumentos ruins?",
+        "@username, hora de provar quem é o maior noob do servidor.",
+        "@username, seu 1v1 foi requisitado pela {botName}. Boa sorte, vai precisar.",
+        "@username, duelo de quem faz mais vergonha em público!"
+      ]
+    },
+    "frasealeatoria": {
+      "builder": {
+        "description": "Solta uma frase aleatória da zoeira da {botName}."
+      },
+      "phrases": [
+        "Quem nunca caiu do servidor que atire o primeiro lag!",
+        "A {botName} viu sua gameplay... e preferiu esquecer.",
+        "Se seu jogo tivesse física real, você nem andava direito.",
+        "Com essa mira, era melhor jogar adivinhação."
+      ]
+    },
+    "ping": {
+      "description": "Responde com Pong! 🏓",
+      "response": "Pong! 🏓"
+    },
+    "ranking": {
+      "builder": {
+        "description": "Mostra o ranking dos membros mais zoados"
+      },
+      "title": "🏆 Ranking dos Mais Zoados",
+      "empty": "Ainda não há ninguém no ranking. Comece a zoar!",
+      "unknown_user": "Usuário desconhecido",
+      "action_name": "zoeira",
+      "action_name_plural": "zoeiras",
+      "motivational_messages": [
+        "🎖️ Parabéns por ser o mais zoado! Que conquista, hein?",
+        "🏆 O título de \"Mais Zoado\" é seu por mérito próprio!",
+        "💯 Ser o mais zoado requer talento especial... ou muita falta dele!",
+        "🌟 Ninguém consegue ser zoado como você. É um dom!",
+        "🔥 O troféu de \"Melhor Alvo de Zoações\" vai para você!"
+      ],
+      "error": {
+        "process": "Erro ao processar usuário no ranking: {error}",
+        "execute": "Ocorreu um erro ao buscar o ranking!"
+      },
+      "embed": {
+        "title": "🏆 Ranking dos Mais Zoados",
+        "description": "Ranking dos membros mais zoados",
+        "footer": "by {botName} 👑"
+      }
     }
-  },
-  "ranking": {
-    "title": "🏆 Ranking dos Mais Zoados",
-    "empty": "Ainda não há ninguém no ranking. Comece a zoar!",
-    "motivational_messages": [
-      "🎖️ Parabéns por ser o mais zoado! Que conquista, hein?",
-      "🏆 O título de \"Mais Zoado\" é seu por mérito próprio!",
-      "💯 Ser o mais zoado requer talento especial... ou muita falta dele!",
-      "🌟 Ninguém consegue ser zoado como você. É um dom!",
-      "🔥 O troféu de \"Melhor Alvo de Zoações\" vai para você!"
-    ]
   },
   "footer": "by {botName} 👑"
 }
