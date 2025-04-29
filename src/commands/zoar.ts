@@ -25,8 +25,16 @@ export default {
       });
     }
 
-    // Incrementa no ranking real
-    incrementUser(alvo.id);
+    // Verifica se o comando está sendo usado em um servidor
+    if (!interaction.guildId) {
+      return await interaction.reply({
+        content: 'Este comando só pode ser usado em servidores!',
+        ephemeral: true,
+      });
+    }
+
+    // Incrementa no ranking do MongoDB - note o await e o serverId adicionado
+    await incrementUser(alvo.id, interaction.guildId);
 
     // Lista de frases zoeiras (adicione mais conforme necessário)
     const frasesZoeiras = [

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { getTopRanking } from '../services/rankingService';
+import { getTopRankingLegacy } from '../services/rankingService';
 
 export default {
   data: new SlashCommandBuilder()
@@ -9,15 +9,15 @@ export default {
   async execute(interaction: ChatInputCommandInteraction) {
     try {
       // Verifica se é um servidor
-      if (!interaction.guild) {
+      if (!interaction.guild || !interaction.guildId) {
         return await interaction.reply({
           content: 'Este comando só pode ser usado em servidores!',
           ephemeral: true,
         });
       }
 
-      // Busca o ranking
-      const ranking = getTopRanking();
+      // Busca o ranking - usando a função de compatibilidade que retorna [userId, count]
+      const ranking = await getTopRankingLegacy(interaction.guildId, 10);
 
       // Se não tiver dados no ranking
       if (!ranking || ranking.length === 0) {

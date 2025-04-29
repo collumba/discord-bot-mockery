@@ -20,7 +20,7 @@ export default {
       });
     }
 
-    if (!interaction.guild) {
+    if (!interaction.guild || !interaction.guildId) {
       return interaction.reply({
         content: 'Este comando só pode ser usado em servidores!',
         ephemeral: true,
@@ -41,7 +41,7 @@ export default {
       const randomIndex = Math.floor(Math.random() * humanMembers.size);
       const randomMember = [...humanMembers.values()][randomIndex];
 
-      incrementUser(randomMember?.user.id || '');
+      await incrementUser(randomMember?.user.id || '', interaction.guildId);
 
       const frasesHumilhacao = [
         `${randomMember} acabou de ganhar o prêmio de "Maior Desastre Gamer de 2023" 🏆`,

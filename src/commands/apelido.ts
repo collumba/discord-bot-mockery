@@ -18,6 +18,14 @@ export default {
       });
     }
 
+    // Verifica se o comando está sendo usado em um servidor
+    if (!interaction.guildId) {
+      return await interaction.reply({
+        content: 'Este comando só pode ser usado em servidores!',
+        ephemeral: true,
+      });
+    }
+
     // Pega o usuário alvo
     const alvo = interaction.options.getUser('alvo');
 
@@ -28,8 +36,8 @@ export default {
       });
     }
 
-    // Incrementa no ranking real
-    incrementUser(alvo.id);
+    // Incrementa no ranking com o MongoDB
+    await incrementUser(alvo.id, interaction.guildId);
 
     // Lista de prefixos e sufixos para criar apelidos
     const prefixos = [
