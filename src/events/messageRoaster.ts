@@ -1,13 +1,14 @@
 import { Client, Events, Message } from 'discord.js';
 import logger from '../utils/logger';
 import { t } from '../services/i18nService';
+import BOT_CONFIG from '../config/botConfig';
 
 // Store recent roasts to prevent spamming the same user
 const userCooldowns = new Map<string, number>();
 // const COOLDOWN_TIME = 2 * 60 * 1000; // 2 minutes in milliseconds
-const COOLDOWN_TIME = 5 * 1000; // 5 seconds in milliseconds
+const COOLDOWN_TIME = BOT_CONFIG.MESSAGE_ROASTER.COOLDOWN_TIME; // 5 seconds in milliseconds
 // const ROAST_CHANCE = 0.2; // 20% chance to roast for each trigger
-const ROAST_CHANCE = 1; // 100% chance to roast for each trigger
+const ROAST_CHANCE = BOT_CONFIG.MESSAGE_ROASTER.ROAST_CHANCE; // 100% chance to roast for each trigger
 
 // Types of roasts available
 type RoastType = 'LONG_MESSAGE' | 'EMOJI_SPAM' | 'ALL_CAPS' | 'KEYBOARD_SMASH';
