@@ -32,6 +32,15 @@ export const BOT_CONFIG = {
     MAX_DELAY: 1, // Maximum delay in minutes
     DEFAULT_CHANNEL_ID: process.env.DEFAULT_CALL_TO_CHANNEL || '', // Set in .env
   },
+
+  // Presence Roaster settings
+  PRESENCE_ROASTER: {
+    ENABLED: true, // Enable/disable game roasting
+    ROAST_CHANCE: 0.2, // 20% chance to roast
+    COOLDOWN_TIME: 10, // Cooldown in minutes
+    DEFAULT_CHANNEL_ID: process.env.DEFAULT_ROAST_CHANNEL || '', // Set in .env
+  },
+
   MESSAGE_ROASTER: {
     COOLDOWN_TIME: 5 * 1000, // 5 seconds in milliseconds
     ROAST_CHANCE: 1, // 100% chance to roast for each trigger
