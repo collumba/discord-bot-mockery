@@ -1,12 +1,11 @@
 import { Events, Client } from 'discord.js';
-import { client } from '../config/client';
+import { client } from '../config/client.js';
 
-client.once(Events.ClientReady, (readyClient: Client) => {
-  if (readyClient.user) {
-    console.log(`Soberaninha está online! Logado como ${readyClient.user.tag}`);
-  }
-});
-
+// Exporta uma função que registra o evento ready
 export default () => {
-  // Função vazia para permitir importação deste arquivo
+  client.once(Events.ClientReady, (readyClient: Client) => {
+    if (readyClient.user) {
+      console.log(`Soberaninha está online! Logado como ${readyClient.user.tag}`);
+    }
+  });
 }; 
