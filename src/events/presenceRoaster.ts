@@ -10,6 +10,7 @@ import {
 import logger from '../utils/logger';
 import BOT_CONFIG from '../config/botConfig';
 import { t } from '../services/i18nService';
+import { getActiveChannel } from '../services/guildConfigService';
 
 export const name = Events.PresenceUpdate;
 export const once = false;
@@ -161,10 +162,11 @@ export async function execute(
     // Skip bots
     if (member.user.bot) return;
 
-    // Skip if we don't have a channel to send to
-    if (!BOT_CONFIG.PRESENCE_ROASTER.DEFAULT_CHANNEL_ID) {
-      return;
-    }
+    // Get the guild ID
+    const guild = newPresence.guild;
+    if (!guild) return; // Skip if no guild (shouldn't happen but TypeScript needs this check)
+
+    const guildId = guild.id;
 
     // Check if this is a new playing activity
     const playingActivity = newPresence.activities.find(
@@ -203,18 +205,27 @@ export async function execute(
     // Get a random roast message for the game
     const roastMessage = getGameRoast(gameName);
 
-    // Get the target channel
+    // Get the active channel for this guild
     try {
-      const channel = await client.channels.fetch(BOT_CONFIG.PRESENCE_ROASTER.DEFAULT_CHANNEL_ID);
+      // Get the active channel ID from guild configuration
+      const activeChannelId = await getActiveChannel(guildId);
+
+      // Skip if no active channel is configured
+      if (!activeChannelId) {
+        logger.debug(`No active channel configured for guild ${guildId}, skipping game roast`);
+        return;
+      }
+
+      // Get the channel
+      const channel = await client.channels.fetch(activeChannelId);
+
       if (!channel || !(channel instanceof TextChannel)) {
-        logger.warn(
-          `Invalid channel for game roasting: ${BOT_CONFIG.PRESENCE_ROASTER.DEFAULT_CHANNEL_ID}`
-        );
+        logger.warn(`Invalid active channel for guild ${guildId}: ${activeChannelId}`);
         return;
       }
 
       // Send the roast message
-      logger.info(`Roasting ${username} for playing ${gameName}`);
+      logger.info(`Roasting ${username} for playing ${gameName} in guild ${guildId}`);
       const success = await sendRoastMessage(channel, username, gameName, roastMessage);
 
       if (success) {

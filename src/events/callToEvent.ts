@@ -1,5 +1,6 @@
-import { Client, Events, TextChannel } from 'discord.js';
+import { Client, Events, TextChannel, Guild } from 'discord.js';
 import { startCallTo, CallToType } from '../services/callToService';
+import { getActiveChannel } from '../services/guildConfigService';
 import logger from '../utils/logger';
 import BOT_CONFIG from '../config/botConfig';
 
@@ -68,38 +69,83 @@ function scheduleNextCallTo(client: Client): void {
 }
 
 /**
- * Executes a random call to action in the default channel
+ * Tries to execute call to action in a single guild
+ * @param guild The guild to execute call to action in
  * @param client Discord client
+ * @returns True if successful, false otherwise
  */
-async function executeCallTo(client: Client): Promise<void> {
+async function executeCallToInGuild(guild: Guild, client: Client): Promise<boolean> {
   try {
-    // Ensure we have a channel ID configured
-    if (!BOT_CONFIG.CALL_TO.DEFAULT_CHANNEL_ID) {
-      logger.warn('No default channel ID configured for automatic Call To Action');
-      return;
+    // Get the active channel ID from guild configuration
+    const activeChannelId = await getActiveChannel(guild.id);
+
+    // Skip if no active channel is configured
+    if (!activeChannelId) {
+      logger.debug(`No active channel configured for guild ${guild.id}, skipping call to action`);
+      return false;
     }
 
     // Get the channel
-    const channel = await client.channels.fetch(BOT_CONFIG.CALL_TO.DEFAULT_CHANNEL_ID);
+    const channel = await client.channels.fetch(activeChannelId);
 
     if (!channel || !(channel instanceof TextChannel)) {
-      logger.warn(
-        `Invalid channel for automatic Call To Action: ${BOT_CONFIG.CALL_TO.DEFAULT_CHANNEL_ID}`
-      );
-      return;
+      logger.warn(`Invalid active channel for guild ${guild.id}: ${activeChannelId}`);
+      return false;
     }
 
     // Select random type and execute
     const type = getRandomCallToType();
-    logger.info(`Executing automatic Call To Action of type: ${type}`);
+    logger.info(`Executing automatic Call To Action of type ${type} in guild ${guild.id}`);
 
     const success = await startCallTo(channel, type);
 
     if (success) {
-      logger.info(`Automatic Call To Action of type ${type} sent successfully`);
+      logger.info(
+        `Automatic Call To Action of type ${type} sent successfully to guild ${guild.id}`
+      );
+      return true;
     } else {
-      logger.warn(`Failed to send automatic Call To Action of type ${type}`);
+      logger.warn(`Failed to send automatic Call To Action of type ${type} to guild ${guild.id}`);
+      return false;
     }
+  } catch (error) {
+    logger.error(
+      `Error in executeCallToInGuild for guild ${guild.id}: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+    return false;
+  }
+}
+
+/**
+ * Executes a random call to action in all guilds with active channels
+ * @param client Discord client
+ */
+async function executeCallTo(client: Client): Promise<void> {
+  try {
+    // Get all guilds the bot is in
+    const guilds = client.guilds.cache;
+
+    if (guilds.size === 0) {
+      logger.info('Bot is not in any guilds, skipping call to action');
+      return;
+    }
+
+    logger.info(`Attempting to send call to action to ${guilds.size} guilds`);
+
+    // Track success count
+    let successCount = 0;
+
+    // Process each guild in sequence
+    for (const [guildId, guild] of guilds) {
+      const success = await executeCallToInGuild(guild, client);
+      if (success) {
+        successCount++;
+      }
+    }
+
+    logger.info(`Call to action executed successfully in ${successCount}/${guilds.size} guilds`);
   } catch (error) {
     logger.error(
       `Error in executeCallTo: ${error instanceof Error ? error.message : String(error)}`

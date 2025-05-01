@@ -1,7 +1,15 @@
-import { Client, Collection, CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import {
+  Client,
+  Collection,
+  CommandInteraction,
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+} from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 import logger from '../utils/logger';
+import { guardActiveChannel } from '../utils/activeChannelGuard';
+import { t } from '../services/i18nService';
 
 /**
  * Interface para comandos do Discord
@@ -67,7 +75,8 @@ async function loadCommands(client: Client): Promise<void> {
 }
 
 /**
- * Registers the interactionCreate event for command handling
+ * Registers the interactionCreate event for commands,
+ * with active channel verification
  * @param client Discord.js client
  */
 function registerCommandHandler(client: Client): void {
@@ -82,11 +91,16 @@ function registerCommandHandler(client: Client): void {
     }
 
     try {
-      await command.execute(interaction as CommandInteraction);
+      // Check if the command can be executed in this channel
+      if (await guardActiveChannel(interaction as ChatInputCommandInteraction)) {
+        // If passed the verification, execute the command
+        await command.execute(interaction as CommandInteraction);
+      }
+      // If not passed, the guardActiveChannel already responded to the user
     } catch (error) {
       logger.error(`Error executing command ${interaction.commandName}`, error as Error);
 
-      const errorMessage = 'An error occurred while executing this command!';
+      const errorMessage = t('errors.execution');
 
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({ content: errorMessage, ephemeral: true });
@@ -96,7 +110,7 @@ function registerCommandHandler(client: Client): void {
     }
   });
 
-  logger.info('Command interaction handler registered');
+  logger.info('Command interaction handler registered with active channel check');
 }
 
 export default {

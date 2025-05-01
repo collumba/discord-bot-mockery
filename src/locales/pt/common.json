@@ -4,12 +4,36 @@
     "server_only": "Esse comando só funciona em servidores.",
     "user_not_found": "Não encontrei esse usuário.",
     "no_valid_members": "Não foi possível encontrar um membro válido.",
-    "no_members_to_insult": "Ninguém para humilhar no momento."
+    "no_members_to_insult": "Ninguém para humilhar no momento.",
+    "wrong_channel": "Este comando só pode ser usado no canal configurado para o bot.",
+    "execution": "Ocorreu um erro ao executar este comando!"
   },
   "cooldown": {
     "wait": "Espera um pouco! Você precisa esperar **{seconds} segundos** para usar {command} novamente."
   },
   "commands": {
+    "set_active_channel": {
+      "name": "set-active-channel",
+      "description": "Define o canal onde o bot poderá enviar mensagens e responder",
+      "options": {
+        "channel": "Selecione o canal onde o bot deve operar"
+      },
+      "errors": {
+        "server_only": "Este comando só pode ser usado em um servidor.",
+        "text_channel_only": "Este comando só pode ser usado em um canal de texto.",
+        "set_error": "Ocorreu um erro ao definir o canal ativo. Por favor, tente novamente mais tarde."
+      },
+      "success": {
+        "set": "Canal ativo definido!",
+        "updated": "Canal ativo atualizado! Anteriormente o bot estava configurado para usar o canal {previousChannel}.",
+        "already_set": "Este canal já está definido como o canal ativo para o bot.",
+        "channel_set": "O bot agora só responderá no canal {channel}."
+      },
+      "examples": {
+        "command_success": "Este comando está sendo executado porque foi usado no canal ativo!",
+        "message_response": "Olá! Eu respondi porque este é meu canal ativo."
+      }
+    },
     "mock": {
       "name": "zoar",
       "title": "Zoação Realizada!",
