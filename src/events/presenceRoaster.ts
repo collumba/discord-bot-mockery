@@ -8,9 +8,10 @@ import {
   ChannelType,
 } from 'discord.js';
 import logger from '../utils/logger';
-import BOT_CONFIG from '../config/botConfig';
+import BOT_CONFIG, { PRESENCE_ROASTER_CONFIG } from '../config/botConfig';
 import { t } from '../services/i18nService';
 import { getActiveChannel } from '../services/guildConfigService';
+import { getReliableRoast } from '../services/roastAI';
 
 export const name = Events.PresenceUpdate;
 export const once = false;
@@ -27,7 +28,7 @@ function isInCooldown(userId: string): boolean {
   const lastRoasted = cooldowns.get(userId);
   if (!lastRoasted) return false;
 
-  const cooldownTime = BOT_CONFIG.PRESENCE_ROASTER.COOLDOWN_TIME * 60 * 1000; // Convert minutes to ms
+  const cooldownTime = PRESENCE_ROASTER_CONFIG.COOLDOWN_TIME * 60 * 1000; // Convert minutes to ms
   return Date.now() - lastRoasted < cooldownTime;
 }
 
@@ -48,7 +49,7 @@ function getRemainingCooldown(userId: string): number {
   const lastRoasted = cooldowns.get(userId);
   if (!lastRoasted) return 0;
 
-  const cooldownTime = BOT_CONFIG.PRESENCE_ROASTER.COOLDOWN_TIME * 60 * 1000; // Convert minutes to ms
+  const cooldownTime = PRESENCE_ROASTER_CONFIG.COOLDOWN_TIME * 60 * 1000; // Convert minutes to ms
   const remaining = cooldownTime - (Date.now() - lastRoasted);
   return remaining > 0 ? Math.ceil(remaining / 1000) : 0;
 }
@@ -58,7 +59,7 @@ function getRemainingCooldown(userId: string): number {
  */
 function cleanupCooldowns(): void {
   const now = Date.now();
-  const cooldownTime = BOT_CONFIG.PRESENCE_ROASTER.COOLDOWN_TIME * 60 * 1000; // Convert minutes to ms
+  const cooldownTime = PRESENCE_ROASTER_CONFIG.COOLDOWN_TIME * 60 * 1000; // Convert minutes to ms
 
   for (const [userId, timestamp] of cooldowns.entries()) {
     if (now - timestamp >= cooldownTime) {
@@ -68,37 +69,93 @@ function cleanupCooldowns(): void {
 }
 
 /**
- * Gets a game-specific roast from i18n
- * @param gameName Game name to get roasts for
- * @returns Random roast phrase for the game
+ * Checks if a game is supported in the PRESENCE_ROASTER_CONFIG
+ * @param gameName Game to check
+ * @returns Whether the game is supported for roasting
  */
-function getGameRoast(gameName: string): string {
+function isGameSupported(gameName: string): boolean {
   const normalizedGame = gameName.toLowerCase();
-  const gameKeys = [
-    'league_of_legends',
-    'valorant',
-    'fortnite',
-    'minecraft',
-    // Add more game keys as needed
-  ];
 
-  // Check if we have specific roasts for this game
-  let translationKey = 'services.presenceRoaster.games.default';
-  for (const key of gameKeys) {
-    if (normalizedGame.includes(key) || key.includes(normalizedGame)) {
-      translationKey = `services.presenceRoaster.games.${key}`;
-      break;
-    }
+  // Check if any of the supported games match the current game
+  return Object.keys(PRESENCE_ROASTER_CONFIG.GAMES).some((gameKey) => {
+    return normalizedGame.includes(gameKey.toLowerCase());
+  });
+}
+
+/**
+ * Creates a game-specific context for roasting
+ * @param username Username to roast
+ * @param gameName Game being played
+ * @returns Context string for the AI
+ */
+function createRoastContext(username: string, gameName: string): string {
+  const normalizedGame = gameName.toLowerCase();
+
+  // Create a context string based on the game and player
+  let context = `${username} is playing ${gameName}. Create a funny, sarcastic one-sentence roast about them.`;
+
+  // Find the matching game in the config
+  const matchedGameKey = Object.keys(PRESENCE_ROASTER_CONFIG.GAMES).find((gameKey) =>
+    normalizedGame.includes(gameKey.toLowerCase())
+  );
+
+  // Add context from config if we have a match
+  if (matchedGameKey) {
+    // Use type assertion to safely access the GAMES object with a dynamic key
+    const gameConfig =
+      PRESENCE_ROASTER_CONFIG.GAMES[matchedGameKey as keyof typeof PRESENCE_ROASTER_CONFIG.GAMES];
+    context += ` ${gameConfig.CONTEXT}`;
   }
 
-  // Get the roasts from i18n
-  const roastsStr = t(translationKey);
+  return context;
+}
 
-  // Split by comma+dot if it's a single string (how the i18n system joins arrays)
-  const roasts = Array.isArray(roastsStr) ? roastsStr : roastsStr.split('.,');
+/**
+ * Gets a default roast if AI fails
+ * @param gameName The game name
+ * @returns A default roast message
+ */
+function getDefaultRoast(gameName: string): string {
+  const normalizedGame = gameName.toLowerCase();
 
-  // Get a random roast
-  return roasts[Math.floor(Math.random() * roasts.length)];
+  // Find the matching game in the config
+  const matchedGameKey = Object.keys(PRESENCE_ROASTER_CONFIG.GAMES).find((gameKey) =>
+    normalizedGame.includes(gameKey.toLowerCase())
+  );
+
+  if (matchedGameKey) {
+    // Use type assertion to safely access the GAMES object with a dynamic key
+    const gameConfig =
+      PRESENCE_ROASTER_CONFIG.GAMES[matchedGameKey as keyof typeof PRESENCE_ROASTER_CONFIG.GAMES];
+    const roasts = gameConfig.ROASTS;
+    return roasts[Math.floor(Math.random() * roasts.length)];
+  }
+
+  // This should never happen since we check isGameSupported first
+  return 'Not even worth roasting.';
+}
+
+/**
+ * Gets game-specific context and generates a roast using roastAI
+ * @param gameName Game name to get roasts for
+ * @param username Username to roast
+ * @returns Promise with a roast phrase for the game
+ */
+async function getGameRoast(gameName: string, username: string): Promise<string> {
+  // Create context for the AI using the game and player information
+  const context = createRoastContext(username, gameName);
+
+  try {
+    // Get a dynamic roast from the AI service
+    return await getReliableRoast(context);
+  } catch (error) {
+    logger.error(
+      `Error getting AI roast: ${error instanceof Error ? error.message : String(error)}`
+    );
+
+    // Fallback to default roasts if AI fails
+    return getDefaultRoast(gameName);
+  }
 }
 
 /**
@@ -149,7 +206,7 @@ export async function execute(
 ): Promise<void> {
   try {
     // Skip if feature is disabled
-    if (!BOT_CONFIG.PRESENCE_ROASTER.ENABLED) return;
+    if (!PRESENCE_ROASTER_CONFIG.ENABLED) return;
 
     // Clean up cooldowns periodically (1% chance on each event to avoid doing it too often)
     if (Math.random() < 0.01) {
@@ -191,19 +248,25 @@ export async function execute(
     const userId = member.user.id;
     const username = member.displayName;
 
+    // Skip if the game is not in our supported list
+    if (!isGameSupported(gameName)) {
+      logger.debug(`Game "${gameName}" not in supported list, skipping roast`);
+      return;
+    }
+
     // Check if user is in cooldown
     if (isInCooldown(userId)) {
       logger.debug(`User ${username} is in cooldown for ${getRemainingCooldown(userId)} seconds`);
       return;
     }
 
-    // Random chance to roast (20% by default)
-    if (Math.random() > BOT_CONFIG.PRESENCE_ROASTER.ROAST_CHANCE) {
+    // Random chance to roast (configurable)
+    if (Math.random() > PRESENCE_ROASTER_CONFIG.ROAST_CHANCE) {
       return;
     }
 
-    // Get a random roast message for the game
-    const roastMessage = getGameRoast(gameName);
+    // Get a roast message for the game using AI
+    const roastMessage = await getGameRoast(gameName, username);
 
     // Get the active channel for this guild
     try {
