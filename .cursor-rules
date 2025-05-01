@@ -9,20 +9,54 @@
       "src/events/",
       "src/services/",
       "src/utils/",
-      "src/config/"
+      "src/config/",
+      "src/models/",
+      "src/types/",
+      "src/database/",
+      "src/locales/"
     ]
   },
   "code_style": {
     "async_await": true,
-    "naming_convention": "camelCase",
+    "naming_convention": {
+      "variables": "camelCase",
+      "constants": "UPPER_CASE",
+      "functions": "camelCase",
+      "classes": "PascalCase",
+      "interfaces": "PascalCase",
+      "types": "PascalCase",
+      "files": "kebab-case"
+    },
     "functions": "prefer arrow functions",
     "file_size": "small and focused on single responsibility",
     "readability_priority": true,
     "comments": "only where necessary to explain complex logic",
-    "typescript_typing": "strong typing, avoid 'any'",
+    "typescript_typing": {
+      "use_strong_typing": true,
+      "avoid_any": true,
+      "prefer_interfaces": true,
+      "declare_return_types": true
+    },
     "code_quality": "high",
     "code_language": "english",
-    "comments_language": "english"
+    "comments_language": "english",
+    "formatting": {
+      "semicolons": true,
+      "quotes": "single",
+      "indent": 2,
+      "trailingComma": "es5",
+      "printWidth": 100,
+      "tabWidth": 2
+    }
+  },
+  "command_structure": {
+    "pattern": "export default object with data and execute properties",
+    "data": "SlashCommandBuilder instance",
+    "execute": "async function with interaction parameter"
+  },
+  "event_structure": {
+    "pattern": "named exports for name, once, and execute function",
+    "execute": "async function with appropriate event parameters"
   },
   "error_handling": {
     "use_try_catch": true,
@@ -31,7 +65,17 @@
   "tools": {
     "environment_variables": "use dotenv",
     "formatting": "ESLint and Prettier configured",
-    "i18n": "use i18nService"
+    "i18n": "use i18nService for all user-facing text",
+    "logging": "use the logger utility from src/utils/logger"
+  },
+  "internationalization": {
+    "service": "i18nService",
+    "default_language": "pt",
+    "supported_languages": [
+      "pt",
+      "en"
+    ],
+    "translation_keys": "use nested object structure with context prefixes"
   },
   "response_style": {
     "completeness": "generate full code examples with filenames and paths",
@@ -40,6 +84,8 @@
   },
   "communication": {
     "developer_level": "assume experienced developer",
-    "avoid_basic_explanations": true
+    "avoid_basic_explanations": true,
+    "code_language": "english only",
+    "comment_language": "english only"
   }
 }

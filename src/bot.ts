@@ -6,7 +6,7 @@ import { connectMongo } from './database/mongo';
 import logger from './utils/logger';
 import { initI18n } from './services/i18nService';
 
-// Carrega as variáveis de ambiente
+// Load environment variables
 config();
 
 const client = new Client({
@@ -20,32 +20,32 @@ const client = new Client({
 
 (async () => {
   try {
-    // Inicializar serviço de i18n
-    logger.info('Inicializando serviço de internacionalização...');
+    // Initialize i18n service
+    logger.info('Initializing i18n service...');
     initI18n(['pt', 'en']);
 
-    // Conectar ao MongoDB
-    logger.info('Iniciando conexão com MongoDB...');
+    // Connect to MongoDB
+    logger.info('Starting MongoDB connection...');
     await connectMongo();
 
-    // Carregar eventos
-    logger.info('Carregando eventos...');
+    // Load events
+    logger.info('Loading events...');
     await loadEvents(client);
 
-    // Carregar comandos
-    logger.info('Carregando comandos...');
+    // Load commands
+    logger.info('Loading commands...');
     await commandHandler.loadCommands(client);
 
-    // Registrar o listener de interações
-    logger.info('Registrando listener de interações...');
+    // Register interaction listener
+    logger.info('Registering interaction listener...');
     await commandHandler.registerCommandHandler(client);
 
-    // Conectar o bot ao Discord
-    logger.info('Conectando ao Discord...');
+    // Connect to Discord
+    logger.info('Connecting to Discord...');
     await client.login(process.env.DISCORD_TOKEN);
-    logger.info('Bot conectado com sucesso!');
+    logger.info('Bot connected successfully!');
   } catch (error) {
-    logger.error('Falha ao inicializar o bot:', error as Error);
+    logger.error('Failed to initialize bot:', error as Error);
     process.exit(1);
   }
 })();

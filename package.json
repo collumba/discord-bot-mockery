@@ -11,7 +11,8 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
-    "deploy-commands": "ts-node src/scripts/deploy-commands.ts"
+    "deploy-commands": "ts-node src/scripts/deploy-commands.ts",
+    "test-roast": "ts-node src/scripts/test-roast.ts"
   },
   "dependencies": {
     "@huggingface/inference": "^3.10.0",

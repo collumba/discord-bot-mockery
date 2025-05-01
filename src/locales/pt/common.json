@@ -204,6 +204,20 @@
     }
   },
   "services": {
+    "roastAI": {
+      "fallback_roasts": [
+        "Você não merece nem zoeira.",
+        "Nossa, nem vou zoar... ia ser muito fácil.",
+        "Tá querendo atenção? Volta outro dia.",
+        "Nem a IA quer zoar você, triste.",
+        "Economizando processamento pra quem merece.",
+        "Internet lenta demais pra zoar você agora.",
+        "Desculpa, tô ocupada zoando alguém que vale a pena.",
+        "Error 404: Zoeira not found.",
+        "Tente novamente quando for mais interessante.",
+        "Zzzzz... que? Ah, nem vi que você estava aí."
+      ]
+    },
     "reminders": {
       "phrases": [
         "E aí, cadê os bravos do PvP?",

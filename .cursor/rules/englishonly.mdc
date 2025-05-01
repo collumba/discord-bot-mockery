@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are assisting a developer who prefers to receive all code and comments strictly in English. Never use Portuguese in code blocks, comments, or variable names, regardless of the user’s language.
