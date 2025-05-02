@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, User } from 'discord.js';
 import { canExecute } from './canExecuteCommand';
 import { isInCooldown, registerCooldown, getRemainingCooldown } from '../services/cooldownService';
 import { t } from '../services/i18nService';
-import BOT_CONFIG from '../config/botConfig';
+import BOT_CONFIG, { CALL_TO_CONFIG } from '../config/botConfig';
 import { getReliableRoast } from '../services/roastAI';
 import embedsService from '../services/embedsService';
 
@@ -153,15 +153,15 @@ export function validateTargetUser(
  */
 function getCommandContext(contextKey: string): string | undefined {
   // For standard commands
-  if (contextKey in BOT_CONFIG.COMMANDS) {
-    return (BOT_CONFIG.COMMANDS as any)[contextKey].CONTEXT;
+  if (contextKey in CALL_TO_CONFIG.CONTEXTS) {
+    return (CALL_TO_CONFIG.CONTEXTS as any)[contextKey];
   }
 
   // For CALLTO subcommands
   if (contextKey.startsWith('CALLTO_')) {
     const callType = contextKey.replace('CALLTO_', '').toLowerCase();
-    if (callType in BOT_CONFIG.COMMANDS.CALLTO) {
-      return (BOT_CONFIG.COMMANDS.CALLTO as any)[callType].CONTEXT;
+    if (callType in CALL_TO_CONFIG.CONTEXTS) {
+      return (CALL_TO_CONFIG.CONTEXTS as any)[callType];
     }
   }
 

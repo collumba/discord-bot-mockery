@@ -6,6 +6,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface IGuildConfig extends Document {
   guildId: string;
   channelId: string;
+  allowedRoleIds: string[];
 }
 
 /**
@@ -21,6 +22,10 @@ const GuildConfigSchema = new Schema<IGuildConfig>(
     channelId: {
       type: String,
       required: true,
+    },
+    allowedRoleIds: {
+      type: [String],
+      default: [],
     },
   },
   {
