@@ -1,8 +1,8 @@
-import { Client, Events, TextChannel, Guild } from 'discord.js';
-import { startCallTo, CallToType } from '../services/callToService';
+import { Client, Events, TextChannel, Guild, EmbedBuilder } from 'discord.js';
 import { getActiveChannel } from '../services/guildConfigService';
 import logger from '../utils/logger';
-import BOT_CONFIG from '../config/botConfig';
+import { CALL_TO_CONFIG } from '../config/botConfig';
+import { getReliableRoast } from '../services/roastAI';
 
 export const name = Events.ClientReady;
 export const once = true;
@@ -15,8 +15,8 @@ let callToTimeout: NodeJS.Timeout | null = null;
  * @returns Random delay in milliseconds
  */
 function getRandomDelay(): number {
-  const minDelay = BOT_CONFIG.CALL_TO.MIN_DELAY * 60 * 1000; // Convert minutes to ms
-  const maxDelay = BOT_CONFIG.CALL_TO.MAX_DELAY * 60 * 1000; // Convert minutes to ms
+  const minDelay = CALL_TO_CONFIG.MIN_DELAY * 60 * 1000; // Convert minutes to ms
+  const maxDelay = CALL_TO_CONFIG.MAX_DELAY * 60 * 1000; // Convert minutes to ms
 
   return Math.floor(Math.random() * (maxDelay - minDelay) + minDelay);
 }
@@ -25,8 +25,8 @@ function getRandomDelay(): number {
  * Selects a random CallTo type from available options
  * @returns Random CallTo type
  */
-function getRandomCallToType(): CallToType {
-  const types: CallToType[] = ['play', 'chat', 'event'];
+function getRandomCallToType(): 'play' | 'chat' | 'event' {
+  const types: ('play' | 'chat' | 'event')[] = ['play', 'chat', 'event'];
   return types[Math.floor(Math.random() * types.length)];
 }
 
@@ -42,7 +42,7 @@ function scheduleNextCallTo(client: Client): void {
   }
 
   // If not enabled, don't schedule
-  if (!BOT_CONFIG.CALL_TO.AUTO_ENABLED) {
+  if (!CALL_TO_CONFIG.AUTO_ENABLED) {
     logger.info('Automatic Call To Action is disabled');
     return;
   }
@@ -66,6 +66,57 @@ function scheduleNextCallTo(client: Client): void {
         scheduleNextCallTo(client);
       });
   }, delay);
+}
+
+/**
+ * Generates a call-to-action message using the roastAI service
+ * @param type Type of call to action
+ * @returns The generated message or null if generation failed
+ */
+async function generateCallToMessage(type: 'play' | 'chat' | 'event'): Promise<string | null> {
+  try {
+    // Get context for this call type from config
+    const context = CALL_TO_CONFIG.CONTEXTS[type];
+
+    // Generate message using roastAI
+    return await getReliableRoast(context);
+  } catch (error) {
+    logger.error(
+      `Error generating call-to-action message: ${error instanceof Error ? error.message : String(error)}`
+    );
+    return null;
+  }
+}
+
+/**
+ * Sends a call-to-action message to a channel
+ * @param channel The channel to send the message to
+ * @param type The type of call-to-action
+ * @param message The message to send
+ * @returns Whether the message was sent successfully
+ */
+async function sendCallToMessage(
+  channel: TextChannel,
+  type: 'play' | 'chat' | 'event',
+  message: string
+): Promise<boolean> {
+  try {
+    // Create embed with the message
+    const embed = new EmbedBuilder()
+      .setColor('Random')
+      .setTitle(CALL_TO_CONFIG.TITLES[type])
+      .setDescription(message)
+      .setTimestamp();
+
+    // Send the message
+    await channel.send({ embeds: [embed] });
+    return true;
+  } catch (error) {
+    logger.error(
+      `Error sending call-to-action message: ${error instanceof Error ? error.message : String(error)}`
+    );
+    return false;
+  }
 }
 
 /**
@@ -93,11 +144,21 @@ async function executeCallToInGuild(guild: Guild, client: Client): Promise<boole
       return false;
     }
 
-    // Select random type and execute
+    // Select random type
     const type = getRandomCallToType();
     logger.info(`Executing automatic Call To Action of type ${type} in guild ${guild.id}`);
 
-    const success = await startCallTo(channel, type);
+    // Generate message using roastAI
+    const message = await generateCallToMessage(type);
+
+    // If message generation failed, cancel the command
+    if (!message) {
+      logger.warn(`Failed to generate message for call-to-action of type ${type}, canceling`);
+      return false;
+    }
+
+    // Send the message
+    const success = await sendCallToMessage(channel, type, message);
 
     if (success) {
       logger.info(

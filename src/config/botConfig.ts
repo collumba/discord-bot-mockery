@@ -25,13 +25,6 @@ export const BOT_CONFIG = {
     ERROR: '❌',
     SUCCESS: '✅',
   },
-
-  // Call To Action settings
-  CALL_TO: {
-    AUTO_ENABLED: true, // Enable/disable automatic calls
-    MIN_DELAY: 1, // Minimum delay in minutes
-    MAX_DELAY: 1, // Maximum delay in minutes
-  },
 };
 
 // Roast AI settings
@@ -117,6 +110,26 @@ export const MESSAGE_ROASTER_CONFIG = {
       "The user typed their entire Discord message in ALL CAPS. Roast them for 'shouting' in text.",
     KEYBOARD_SMASH:
       "The user smashed their keyboard, resulting in random gibberish like 'asdfghjkl' or 'kkkkkkkk'. Roast them for keyboard smashing.",
+  },
+};
+
+// Call To Action settings
+export const CALL_TO_CONFIG = {
+  AUTO_ENABLED: true, // Enable/disable automatic calls
+  MIN_DELAY: 1, // Minimum delay in minutes
+  MAX_DELAY: 1, // Maximum delay in minutes
+  USE_ROAST_AI: true, // Use roastAI service for generating messages
+  CONTEXTS: {
+    play: 'Generate a fun, engaging call-to-action message inviting Discord users to play games together. The message should be short, enthusiastic, and mention gaming. Feel free to reference popular games or gaming culture.',
+    chat: 'Generate a casual, friendly call-to-action message inviting Discord users to join a conversation. The message should be short and suggest the chat is getting quiet or needs more activity.',
+    event:
+      'Generate an exciting call-to-action message inviting Discord users to join an online event. The message should create anticipation and urgency, suggesting something fun is about to happen.',
+  },
+  // Title emojis for different call types
+  TITLES: {
+    play: "🎮 Let's Play!",
+    chat: "💬 Let's Chat!",
+    event: '🏆 Event Time!',
   },
 };
 
