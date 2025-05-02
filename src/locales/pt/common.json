@@ -66,63 +66,9 @@
         "self_target": "Você não pode apelidar a si mesmo! Isso seria muito triste..."
       }
     },
-    "challenge": {
-      "builder": {
-        "description": "Desafia um usuário aleatório para um duelo!",
-        "options": {
-          "user": "Usuário para desafiar"
-        }
-      },
-      "phrases": [
-        "@username, você foi desafiado para uma batalha de memes! Quem perde vira o tiozão do grupo.",
-        "@username, aceitas um X1 de argumentos ruins?",
-        "@username, hora de provar quem é o maior noob do servidor.",
-        "@username, seu 1v1 foi requisitado pela {botName}. Boa sorte, vai precisar.",
-        "@username, duelo de quem faz mais vergonha em público!"
-      ]
-    },
     "randomphrase": {
       "builder": {
         "description": "Solta uma frase aleatória da zoeira da {botName}."
-      }
-    },
-    "callto": {
-      "play": {
-        "name": "callto-play",
-        "description": "Convida todos para jogar com uma mensagem aleatória",
-        "success": "✅ Convite para jogar enviado com sucesso!",
-        "error": "❌ Erro ao enviar convite para jogar. Tente novamente mais tarde."
-      },
-      "chat": {
-        "name": "callto-chat",
-        "description": "Convida todos para conversar com uma mensagem aleatória",
-        "success": "✅ Convite para conversar enviado com sucesso!",
-        "error": "❌ Erro ao enviar convite para conversar. Tente novamente mais tarde."
-      },
-      "event": {
-        "name": "callto-event",
-        "description": "Convida todos para um evento com uma mensagem aleatória",
-        "success": "✅ Convite para o evento enviado com sucesso!",
-        "error": "❌ Erro ao enviar convite para o evento. Tente novamente mais tarde."
-      },
-      "custom": {
-        "name": "callto-custom",
-        "description": "Envia uma mensagem de call to action personalizada",
-        "option_text": "Texto da mensagem personalizada",
-        "success": "✅ Mensagem personalizada enviada com sucesso!",
-        "error": "❌ Erro ao enviar mensagem personalizada. Tente novamente mais tarde."
-      },
-      "voice": {
-        "name": "callto-voice",
-        "description": "Convida todos para conversar no canal de voz",
-        "success": "✅ Convite para conversar no canal de voz enviado com sucesso!",
-        "error": "❌ Erro ao enviar convite para o canal de voz. Tente novamente mais tarde."
-      },
-      "titles": {
-        "play": "🎮 Let's Play!",
-        "chat": "💬 Let's Chat!",
-        "event": "🏆 Event Time!",
-        "custom": "📣 Attention!"
       }
     },
     "ping": {
@@ -186,19 +132,6 @@
         "Error 404: Zoeira not found.",
         "Tente novamente quando for mais interessante.",
         "Zzzzz... que? Ah, nem vi que você estava aí."
-      ]
-    },
-    "reminders": {
-      "phrases": [
-        "E aí, cadê os bravos do PvP?",
-        "Chat mais morto que meu KD.",
-        "Se ninguém falar nada em 5 minutos, vou começar a humilhar aleatoriamente.",
-        "Partidinha casual, alguém?",
-        "Isso aqui tá parecendo fila de MMORPG às 3 da manhã.",
-        "Alguém dropa emoção aí que tá em falta.",
-        "Silêncio no chat é sinal de que estão todos perdendo no jogo.",
-        "Mais quieto que lobby depois de um rage quit coletivo.",
-        "Esse chat tá precisando de uma buff de comunicação."
       ]
     },
     "messageRoaster": {
