@@ -1,8 +1,7 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import BOT_CONFIG from '../config/botConfig';
 import { t } from '../services/i18nService';
-import { getReliableRoast } from '../services/roastAI';
-import { isInCooldown, registerCooldown, getRemainingCooldown } from '../services/cooldownService';
+import CommandHandler from '../utils/commandHandler';
 
 export default {
   data: new SlashCommandBuilder()
@@ -11,19 +10,9 @@ export default {
 
   async execute(interaction: ChatInputCommandInteraction) {
     // Check for cooldown
-    if (isInCooldown(interaction.user.id, 'randomphrase')) {
-      const remainingTime = getRemainingCooldown(interaction.user.id, 'randomphrase');
-      const embed = new EmbedBuilder()
-        .setColor(BOT_CONFIG.COLORS.WARNING)
-        .setTitle(
-          `${BOT_CONFIG.ICONS.COOLDOWN} ${t('cooldown.wait', {
-            seconds: remainingTime,
-            command: 'randomphrase',
-          })}`
-        )
-        .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
-
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+    const cooldownCheck = CommandHandler.checkCooldown(interaction, 'randomphrase');
+    if (!cooldownCheck.success) {
+      return interaction.reply(cooldownCheck.response);
     }
 
     // Defer the reply since AI generation may take time
@@ -31,28 +20,27 @@ export default {
 
     try {
       // Generate an AI-powered random phrase
-      const context = BOT_CONFIG.COMMANDS.RANDOMPHRASE.CONTEXT;
-      const phrase = await getReliableRoast(context);
+      const generation = await CommandHandler.generateAiContent('RANDOMPHRASE');
 
       // If AI generation failed, cancel the command
-      if (!phrase) {
+      if (!generation.success) {
         return interaction.editReply({
           content: t('errors.execution'),
         });
       }
 
       // Register cooldown
-      registerCooldown(
+      CommandHandler.applyCooldown(
         interaction.user.id,
         'randomphrase',
         BOT_CONFIG.COMMANDS.RANDOMPHRASE.COOLDOWN_TIME / 1000
       );
 
-      // Create embed with the AI-generated phrase
-      const embed = new EmbedBuilder()
-        .setColor(BOT_CONFIG.COLORS.DEFAULT)
-        .setDescription(phrase.replace(/{botName}/g, BOT_CONFIG.NAME))
-        .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
+      // Create embed with the AI-generated phrase and no title
+      const embed = CommandHandler.embedsService.createResponseEmbed(
+        '', // No title needed for randomphrase
+        generation.content.replace(/{botName}/g, BOT_CONFIG.NAME)
+      );
 
       // Send the reply
       await interaction.editReply({ embeds: [embed] });

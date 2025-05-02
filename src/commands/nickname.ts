@@ -1,11 +1,9 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { incrementUser } from '../services/rankingService';
-import { canExecute } from '../utils/canExecuteCommand';
-import { isInCooldown, registerCooldown, getRemainingCooldown } from '../services/cooldownService';
 import BOT_CONFIG from '../config/botConfig';
-import { checkAndAwardAchievements } from '../services/achievementsService';
 import { t } from '../services/i18nService';
-import { getReliableRoast } from '../services/roastAI';
+import CommandHandler from '../utils/commandHandler';
+import AchievementHandler from '../utils/achievementHandler';
 
 export default {
   data: new SlashCommandBuilder()
@@ -19,66 +17,44 @@ export default {
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    if (!canExecute(interaction)) {
-      return interaction.reply({
-        content: t('errors.permission_denied'),
-        ephemeral: true,
-      });
+    // Check permissions
+    const permissionCheck = CommandHandler.checkPermissions(interaction);
+    if (!permissionCheck.success) {
+      return interaction.reply(permissionCheck.response);
     }
 
-    if (isInCooldown(interaction.user.id, 'nickname')) {
-      const remainingTime = getRemainingCooldown(interaction.user.id, 'nickname');
-      const embed = new EmbedBuilder()
-        .setColor(BOT_CONFIG.COLORS.WARNING)
-        .setTitle(
-          `${BOT_CONFIG.ICONS.COOLDOWN} ${t('cooldown.wait', {
-            seconds: remainingTime,
-            command: 'nickname',
-          })}`
-        )
-        .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
-
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+    // Check cooldown
+    const cooldownCheck = CommandHandler.checkCooldown(interaction, 'nickname');
+    if (!cooldownCheck.success) {
+      return interaction.reply(cooldownCheck.response);
     }
 
-    const user = interaction.options.getUser('user');
-    if (!user) {
-      return interaction.reply({ content: t('errors.user_not_found'), ephemeral: true });
+    // Validate target user
+    const userCheck = CommandHandler.validateTargetUser(interaction, 'user');
+    if (!userCheck.success) {
+      return interaction.reply(userCheck.response);
     }
 
-    // Prevent selecting the bot itself
-    if (user.id === interaction.client.user?.id) {
-      return interaction.reply({
-        content: t('errors.no_valid_members'),
-        ephemeral: true,
-      });
-    }
-
-    // Prevent targeting self
-    if (user.id === interaction.user.id) {
-      return interaction.reply({
-        content: t('commands.nickname.error.self_target'),
-        ephemeral: true,
-      });
-    }
+    const user = userCheck.user;
 
     // Defer the reply since AI generation may take time
     await interaction.deferReply();
 
     try {
       // Generate an AI-powered nickname
-      const context = BOT_CONFIG.COMMANDS.NICKNAME.CONTEXT.replace('@USER', user.username);
-      const nickname = await getReliableRoast(context);
+      const generation = await CommandHandler.generateAiContent('NICKNAME', {
+        '@USER': user.username,
+      });
 
       // If AI generation failed, cancel the command
-      if (!nickname) {
+      if (!generation.success) {
         return interaction.editReply({
           content: t('errors.execution'),
         });
       }
 
       // Register cooldown and update rankings
-      registerCooldown(
+      CommandHandler.applyCooldown(
         interaction.user.id,
         'nickname',
         BOT_CONFIG.COMMANDS.NICKNAME.COOLDOWN_TIME / 1000
@@ -86,21 +62,21 @@ export default {
       incrementUser(user.id, interaction.guildId!, interaction.user.id, 'nickname');
 
       // Create embed with the AI-generated nickname
-      const embed = new EmbedBuilder()
-        .setColor(BOT_CONFIG.COLORS.DEFAULT)
-        .setTitle(`${BOT_CONFIG.ICONS.NICKNAME} ${t('commands.nickname.title')}`)
-        .setDescription(t('commands.nickname.success', { username: `<@${user.id}>`, nickname }))
-        .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
+      const embed = CommandHandler.embedsService.createResponseEmbed(
+        t('commands.nickname.title'),
+        t('commands.nickname.success', { username: `<@${user.id}>`, nickname: generation.content }),
+        BOT_CONFIG.ICONS.NICKNAME
+      );
 
       // Send the reply
       await interaction.editReply({ embeds: [embed] });
 
       // Process achievements
-      try {
-        await checkAndAwardAchievements(interaction.user.id, interaction.guildId!, 'nicknamer');
-      } catch (error) {
-        console.error('Error processing nickname achievements:', error);
-      }
+      await AchievementHandler.processAchievements(
+        interaction.user,
+        interaction.guildId!,
+        'nicknamer'
+      );
     } catch (error) {
       console.error('Error in nickname command:', error);
       return interaction.editReply({

@@ -71,6 +71,33 @@
         "description": "Solta uma frase aleatória da zoeira da {botName}."
       }
     },
+    "callto": {
+      "play": {
+        "name": "callto-play",
+        "description": "Convida todos para jogar com uma mensagem gerada por IA",
+        "success": "✅ Convite para jogar enviado com sucesso!",
+        "error": "❌ Erro ao enviar convite para jogar. Tente novamente mais tarde."
+      },
+      "chat": {
+        "name": "callto-chat",
+        "description": "Convida todos para conversar com uma mensagem gerada por IA",
+        "success": "✅ Convite para conversar enviado com sucesso!",
+        "error": "❌ Erro ao enviar convite para conversar. Tente novamente mais tarde."
+      },
+      "event": {
+        "name": "callto-event",
+        "description": "Convida todos para um evento com uma mensagem gerada por IA",
+        "success": "✅ Convite para o evento enviado com sucesso!",
+        "error": "❌ Erro ao enviar convite para o evento. Tente novamente mais tarde."
+      },
+      "custom": {
+        "name": "callto-custom",
+        "description": "Envia uma mensagem de call to action personalizada",
+        "option_text": "Texto da mensagem personalizada",
+        "success": "✅ Mensagem personalizada enviada com sucesso!",
+        "error": "❌ Erro ao enviar mensagem personalizada. Tente novamente mais tarde."
+      }
+    },
     "ping": {
       "description": "Responde com Pong! 🏓",
       "response": "Pong! 🏓"
