@@ -5,11 +5,11 @@ import {
   ChannelType,
 } from 'discord.js';
 import {
-  startCallTo,
   isInCooldown,
   registerCooldown,
   getRemainingCooldown,
-} from '../services/callToService';
+  sendCallToAI,
+} from '../services/callToAIService';
 import { canExecute } from '../utils/canExecuteCommand';
 import BOT_CONFIG from '../config/botConfig';
 import { t } from '../services/i18nService';
@@ -55,23 +55,24 @@ export default {
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
-    // Registrar cooldown
-    registerCooldown(interaction.user.id, 'chat');
+    // Defer the reply since AI generation may take time
+    await interaction.deferReply({ ephemeral: true });
 
-    // Enviar mensagem
-    const success = await startCallTo(interaction.channel, 'chat');
+    // Send AI message
+    const success = await sendCallToAI(interaction.channel, 'chat');
 
+    // Register cooldown only if the message was sent successfully
     if (success) {
-      // Responder ao comando de forma efêmera
-      return interaction.reply({
+      registerCooldown(interaction.user.id, 'chat');
+
+      // Respond to the command in an ephemeral manner
+      return interaction.editReply({
         content: t('commands.callto.chat.success'),
-        ephemeral: true,
       });
     } else {
-      // Informar erro
-      return interaction.reply({
+      // Inform the error
+      return interaction.editReply({
         content: t('commands.callto.chat.error'),
-        ephemeral: true,
       });
     }
   },

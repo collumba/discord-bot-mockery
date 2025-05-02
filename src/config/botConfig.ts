@@ -119,17 +119,21 @@ export const CALL_TO_CONFIG = {
   MIN_DELAY: 1, // Minimum delay in minutes
   MAX_DELAY: 1, // Maximum delay in minutes
   USE_ROAST_AI: true, // Use roastAI service for generating messages
+  COMMAND_COOLDOWN_TIME: 5 * 60 * 1000, // 5 minutes in milliseconds
   CONTEXTS: {
     play: 'Generate a fun, engaging call-to-action message inviting Discord users to play games together. The message should be short, enthusiastic, and mention gaming. Feel free to reference popular games or gaming culture.',
     chat: 'Generate a casual, friendly call-to-action message inviting Discord users to join a conversation. The message should be short and suggest the chat is getting quiet or needs more activity.',
     event:
       'Generate an exciting call-to-action message inviting Discord users to join an online event. The message should create anticipation and urgency, suggesting something fun is about to happen.',
+    custom:
+      'Format the following custom message in a creative and engaging way for a Discord announcement: ',
   },
   // Title emojis for different call types
   TITLES: {
     play: "🎮 Let's Play!",
     chat: "💬 Let's Chat!",
     event: '🏆 Event Time!',
+    custom: '📣 Attention!',
   },
 };
 

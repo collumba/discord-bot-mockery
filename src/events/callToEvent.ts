@@ -1,8 +1,8 @@
-import { Client, Events, TextChannel, Guild, EmbedBuilder } from 'discord.js';
+import { Client, Events, TextChannel, Guild } from 'discord.js';
 import { getActiveChannel } from '../services/guildConfigService';
 import logger from '../utils/logger';
 import { CALL_TO_CONFIG } from '../config/botConfig';
-import { getReliableRoast } from '../services/roastAI';
+import { sendCallToAI } from '../services/callToAIService';
 
 export const name = Events.ClientReady;
 export const once = true;
@@ -69,57 +69,6 @@ function scheduleNextCallTo(client: Client): void {
 }
 
 /**
- * Generates a call-to-action message using the roastAI service
- * @param type Type of call to action
- * @returns The generated message or null if generation failed
- */
-async function generateCallToMessage(type: 'play' | 'chat' | 'event'): Promise<string | null> {
-  try {
-    // Get context for this call type from config
-    const context = CALL_TO_CONFIG.CONTEXTS[type];
-
-    // Generate message using roastAI
-    return await getReliableRoast(context);
-  } catch (error) {
-    logger.error(
-      `Error generating call-to-action message: ${error instanceof Error ? error.message : String(error)}`
-    );
-    return null;
-  }
-}
-
-/**
- * Sends a call-to-action message to a channel
- * @param channel The channel to send the message to
- * @param type The type of call-to-action
- * @param message The message to send
- * @returns Whether the message was sent successfully
- */
-async function sendCallToMessage(
-  channel: TextChannel,
-  type: 'play' | 'chat' | 'event',
-  message: string
-): Promise<boolean> {
-  try {
-    // Create embed with the message
-    const embed = new EmbedBuilder()
-      .setColor('Random')
-      .setTitle(CALL_TO_CONFIG.TITLES[type])
-      .setDescription(message)
-      .setTimestamp();
-
-    // Send the message
-    await channel.send({ embeds: [embed] });
-    return true;
-  } catch (error) {
-    logger.error(
-      `Error sending call-to-action message: ${error instanceof Error ? error.message : String(error)}`
-    );
-    return false;
-  }
-}
-
-/**
  * Tries to execute call to action in a single guild
  * @param guild The guild to execute call to action in
  * @param client Discord client
@@ -148,17 +97,8 @@ async function executeCallToInGuild(guild: Guild, client: Client): Promise<boole
     const type = getRandomCallToType();
     logger.info(`Executing automatic Call To Action of type ${type} in guild ${guild.id}`);
 
-    // Generate message using roastAI
-    const message = await generateCallToMessage(type);
-
-    // If message generation failed, cancel the command
-    if (!message) {
-      logger.warn(`Failed to generate message for call-to-action of type ${type}, canceling`);
-      return false;
-    }
-
-    // Send the message
-    const success = await sendCallToMessage(channel, type, message);
+    // Use the new AI service to send the message
+    const success = await sendCallToAI(channel, type);
 
     if (success) {
       logger.info(
