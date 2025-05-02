@@ -41,6 +41,11 @@ export const BOT_CONFIG = {
       CONTEXT:
         'Generate a funny, creative nickname for a Discord user based on gaming culture. The nickname should be short, memorable, and somewhat teasing but not offensive. Use @USER as the placeholder for where the username will be inserted.',
     },
+    RANDOMPHRASE: {
+      COOLDOWN_TIME: 10 * 1000, // 10 seconds in milliseconds
+      CONTEXT:
+        'Generate a random, witty phrase from the perspective of a sarcastic, hardcore gamer bot. The phrase should be gaming-related, potentially referencing popular games, gaming culture, or gamer stereotypes. It should be humorous but not offensive.',
+    },
   },
 };
 
