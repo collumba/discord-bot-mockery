@@ -36,10 +36,11 @@ export default {
         BOT_CONFIG.COMMANDS.RANDOMPHRASE.COOLDOWN_TIME / 1000
       );
 
-      // Create embed with the AI-generated phrase and no title
+      // Create embed with the AI-generated phrase with a proper title
       const embed = CommandHandler.embedsService.createResponseEmbed(
-        '', // No title needed for randomphrase
-        generation.content.replace(/{botName}/g, BOT_CONFIG.NAME)
+        t('commands.randomphrase.title', { fallback: 'Random Phrase' }), // Use translation or fallback
+        generation.content.replace(/{botName}/g, BOT_CONFIG.NAME),
+        BOT_CONFIG.ICONS.MOCK // Use an appropriate icon from config
       );
 
       // Send the reply

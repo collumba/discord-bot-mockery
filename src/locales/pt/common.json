@@ -69,7 +69,8 @@
     "randomphrase": {
       "builder": {
         "description": "Solta uma frase aleatória da zoeira da {botName}."
-      }
+      },
+      "title": "Frase Aleatória"
     },
     "callto": {
       "play": {
