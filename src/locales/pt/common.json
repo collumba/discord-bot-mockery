@@ -45,32 +45,13 @@
       },
       "error": {
         "self_target": "Você não pode zoar a si mesmo! Isso seria muito triste..."
-      },
-      "phrases": [
-        "{target} tá jogando tão mal que até os bots do tutorial têm pena.",
-        "Todo mundo erra, mas {target} eleva isso a uma arte.",
-        "{target} é o tipo de pessoa que morre pro tutorial.",
-        "{target} tá tão ruim hoje que seria kickado de um jogo single-player.",
-        "{target} tem tanto talento que até o auto-aim desiste.",
-        "Os NPCs entram em modo fácil quando veem {target} chegando.",
-        "{target} é aquele que compra skin pra morrer mais bonito.",
-        "Dizem que {target} já zerou o LoL. Morreu de todas as formas possíveis.",
-        "As estatísticas de {target} são tão ruins que a Steam sugere jogar Candy Crush.",
-        "{target} é tão azarado que até bug acontece só com ele."
-      ]
+      }
     },
     "humiliate": {
       "title": "Humilhação Pública!",
       "builder": {
         "description": "Escolhe alguém aleatório para zoar."
-      },
-      "phrases": [
-        "{username} é a prova viva que respiração é automática.",
-        "{username} confunde skill de cura com skill de dano.",
-        "{username} já tomou DC no tutorial.",
-        "{username} é considerado NPC pelo próprio time.",
-        "{username} é tão ruim que até os bots evitam."
-      ]
+      }
     },
     "nickname": {
       "title": "Novo Apelido Encontrado!",
@@ -81,14 +62,9 @@
         }
       },
       "success": "{username} agora é conhecido como **{nickname}**!",
-      "nicknames": [
-        "LagLord",
-        "BugMaster",
-        "Noobzera",
-        "Crashador",
-        "Feedador Oficial",
-        "Rei do Respawn"
-      ]
+      "error": {
+        "self_target": "Você não pode apelidar a si mesmo! Isso seria muito triste..."
+      }
     },
     "challenge": {
       "builder": {
@@ -108,13 +84,7 @@
     "randomphrase": {
       "builder": {
         "description": "Solta uma frase aleatória da zoeira da {botName}."
-      },
-      "phrases": [
-        "Quem nunca caiu do servidor que atire o primeiro lag!",
-        "A {botName} viu sua gameplay... e preferiu esquecer.",
-        "Se seu jogo tivesse física real, você nem andava direito.",
-        "Com essa mira, era melhor jogar adivinhação."
-      ]
+      }
     },
     "callto": {
       "play": {
@@ -316,35 +286,6 @@
           "A tela de carregamento é o único momento em que você não está falhando."
         ]
       }
-    },
-    "callTo": {
-      "play": [
-        "E aí, cadê os bravos do PvP?",
-        "Alguém afim de uma partidinha casual?",
-        "Quem tá on pra jogar? Os NPC do tutorial tão com saudades.",
-        "Procura-se squad que não desiste na primeira morte!",
-        "Quem tá encarando uma queue de ranked hoje?",
-        "Dizem que quem não joga hoje vai perder seu rank...",
-        "Server vazio, ping ok, inventário cheio... falta só a galera!"
-      ],
-      "chat": [
-        "Chat mais morto que meu KD.",
-        "Alguém aí tem história pra contar ou tá todo mundo AFK?",
-        "Fila de MMORPG às 3 da manhã vibes por aqui.",
-        "Esse chat tá precisando de uma buff de comunicação.",
-        "Silêncio no chat é sinal de que estão todos perdendo no jogo.",
-        "Mais quieto que lobby depois de um rage quit coletivo.",
-        "Alguém dropa emoção aí que tá em falta."
-      ],
-      "event": [
-        "Se ninguém falar nada em 5 minutos, vou começar a humilhar aleatoriamente.",
-        "Hora do evento! A premiação é não ser humilhado por mim.",
-        "Evento de hoje: quem contar a história de game mais vergonhosa ganha.",
-        "Hora do torneio! Só não sei exatamente de que, mas apareçam!",
-        "Evento surpresa! A surpresa é que não tem evento, só queria ver vocês online.",
-        "Reunião de guild: vamos discutir por que vocês são tão ruins.",
-        "Chama a galera aí que hoje tem evento especial!"
-      ]
     }
   },
   "achievements": {

@@ -46,6 +46,21 @@ export const BOT_CONFIG = {
       CONTEXT:
         'Generate a random, witty phrase from the perspective of a sarcastic, hardcore gamer bot. The phrase should be gaming-related, potentially referencing popular games, gaming culture, or gamer stereotypes. It should be humorous but not offensive.',
     },
+    CALLTO: {
+      COOLDOWN_TIME: 300 * 1000, // 5 minutes in milliseconds
+      PLAY: {
+        CONTEXT:
+          'Generate a short, enthusiastic call-to-action message inviting Discord users to play games together. The message should be gaming-related, casual, and motivational.',
+      },
+      CHAT: {
+        CONTEXT:
+          'Generate a short, casual message encouraging Discord users to be more active in the chat. The message should be playful and mention how quiet the chat is.',
+      },
+      EVENT: {
+        CONTEXT:
+          'Generate a short announcement message for a gaming event. The message should create excitement and urgency, inviting users to participate in some activity.',
+      },
+    },
   },
 };
 
