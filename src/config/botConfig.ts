@@ -36,6 +36,11 @@ export const BOT_CONFIG = {
       CONTEXT:
         'Generate a mocking, sarcastic message about how bad @USER is at gaming. The message should be playful, not truly offensive, with references to common gaming mistakes, mechanics, or stereotypes. Use @USER as the placeholder for the username.',
     },
+    NICKNAME: {
+      COOLDOWN_TIME: 15 * 1000, // 15 seconds in milliseconds
+      CONTEXT:
+        'Generate a funny, creative nickname for a Discord user based on gaming culture. The nickname should be short, memorable, and somewhat teasing but not offensive. Use @USER as the placeholder for where the username will be inserted.',
+    },
   },
 };
 
