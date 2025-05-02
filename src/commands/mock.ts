@@ -5,6 +5,7 @@ import { isInCooldown, registerCooldown, getRemainingCooldown } from '../service
 import BOT_CONFIG from '../config/botConfig';
 import { checkAndAwardAchievements } from '../services/achievementsService';
 import { t } from '../services/i18nService';
+import { getReliableRoast } from '../services/roastAI';
 
 export default {
   data: new SlashCommandBuilder()
@@ -70,96 +71,108 @@ export default {
       });
     }
 
-    // Register cooldown
-    registerCooldown(interaction.user.id, 'mock', 30); // 30 second cooldown
+    // Defer the reply since AI generation may take time
+    await interaction.deferReply();
 
-    // Update rankings
-    await incrementUser(target.id, interaction.guildId!, interaction.user.id, 'mock');
-
-    // Get mockery phrases from translations
-    const mockeryArray = t('commands.mock.phrases').split('.,');
-
-    // Random phrase selection
-    const basePhrase = mockeryArray[Math.floor(Math.random() * mockeryArray.length)];
-    const phrase = basePhrase.replace(/{target}/g, `@${target.username}`);
-
-    // Create embed
-    const embed = new EmbedBuilder()
-      .setColor(BOT_CONFIG.COLORS.DEFAULT)
-      .setTitle(`${BOT_CONFIG.ICONS.MOCK} ${t('commands.mock.title')}`)
-      .setDescription(phrase)
-      .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
-
-    // Send the reply
-    await interaction.reply({ embeds: [embed] });
-
-    // Process achievements after command execution
     try {
-      // Check for achievements
-      const targetAchievements = await checkAndAwardAchievements(
-        target.id,
-        interaction.guildId!,
-        'mocked'
-      );
+      // Generate an AI-powered mock message
+      const context = BOT_CONFIG.COMMANDS.MOCK.CONTEXT.replace('@USER', target.username);
+      const mockMessage = await getReliableRoast(context);
 
-      const authorAchievements = await checkAndAwardAchievements(
-        interaction.user.id,
-        interaction.guildId!,
-        'mocker'
-      );
-
-      // Send achievement notifications if earned
-      if (targetAchievements && targetAchievements.length > 0) {
-        try {
-          // Create achievement embed
-          const achievementEmbed = new EmbedBuilder()
-            .setColor(BOT_CONFIG.COLORS.SUCCESS)
-            .setTitle(t('achievements.unlocked.title'))
-            .setDescription(
-              t('achievements.unlocked.description', {
-                achievement: t(`achievements.${targetAchievements[0]}`),
-              })
-            )
-            .setFooter({
-              text: t('footer', { botName: BOT_CONFIG.NAME }),
-            });
-
-          // Try to send DM to target
-          await target.send({ embeds: [achievementEmbed] }).catch(() => {
-            // Fail silently (user might have DMs disabled)
-          });
-        } catch (error) {
-          console.error('Error sending achievement notification:', error);
-        }
+      // If AI generation failed, cancel the command
+      if (!mockMessage) {
+        return interaction.editReply({
+          content: t('errors.execution'),
+        });
       }
 
-      // If author earned achievements, notify them
-      if (authorAchievements && authorAchievements.length > 0) {
-        try {
-          // Create achievement embed
-          const achievementEmbed = new EmbedBuilder()
-            .setColor(BOT_CONFIG.COLORS.SUCCESS)
-            .setTitle(t('achievements.unlocked.title'))
-            .setDescription(
-              t('achievements.unlocked.description', {
-                achievement: t(`achievements.${authorAchievements[0]}`),
-              })
-            )
-            .setFooter({
-              text: t('footer', { botName: BOT_CONFIG.NAME }),
-            });
+      // Register cooldown and update rankings only if AI generation succeeds
+      registerCooldown(interaction.user.id, 'mock', 30); // 30 second cooldown
+      await incrementUser(target.id, interaction.guildId!, interaction.user.id, 'mock');
 
-          // Try to send DM to author
-          await interaction.user.send({ embeds: [achievementEmbed] }).catch(() => {
-            // Fail silently (user might have DMs disabled)
-          });
-        } catch (error) {
-          console.error('Error sending achievement notification:', error);
+      // Create embed with the AI-generated mock message
+      const embed = new EmbedBuilder()
+        .setColor(BOT_CONFIG.COLORS.DEFAULT)
+        .setTitle(`${BOT_CONFIG.ICONS.MOCK} ${t('commands.mock.title')}`)
+        .setDescription(mockMessage.replace('@USER', `@${target.username}`))
+        .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
+
+      // Send the reply
+      await interaction.editReply({ embeds: [embed] });
+
+      // Process achievements after command execution
+      try {
+        // Check for achievements
+        const targetAchievements = await checkAndAwardAchievements(
+          target.id,
+          interaction.guildId!,
+          'mocked'
+        );
+
+        const authorAchievements = await checkAndAwardAchievements(
+          interaction.user.id,
+          interaction.guildId!,
+          'mocker'
+        );
+
+        // Send achievement notifications if earned
+        if (targetAchievements && targetAchievements.length > 0) {
+          try {
+            // Create achievement embed
+            const achievementEmbed = new EmbedBuilder()
+              .setColor(BOT_CONFIG.COLORS.SUCCESS)
+              .setTitle(t('achievements.unlocked.title'))
+              .setDescription(
+                t('achievements.unlocked.description', {
+                  achievement: t(`achievements.${targetAchievements[0]}`),
+                })
+              )
+              .setFooter({
+                text: t('footer', { botName: BOT_CONFIG.NAME }),
+              });
+
+            // Try to send DM to target
+            await target.send({ embeds: [achievementEmbed] }).catch(() => {
+              // Fail silently (user might have DMs disabled)
+            });
+          } catch (error) {
+            console.error('Error sending achievement notification:', error);
+          }
         }
+
+        // If author earned achievements, notify them
+        if (authorAchievements && authorAchievements.length > 0) {
+          try {
+            // Create achievement embed
+            const achievementEmbed = new EmbedBuilder()
+              .setColor(BOT_CONFIG.COLORS.SUCCESS)
+              .setTitle(t('achievements.unlocked.title'))
+              .setDescription(
+                t('achievements.unlocked.description', {
+                  achievement: t(`achievements.${authorAchievements[0]}`),
+                })
+              )
+              .setFooter({
+                text: t('footer', { botName: BOT_CONFIG.NAME }),
+              });
+
+            // Try to send DM to author
+            await interaction.user.send({ embeds: [achievementEmbed] }).catch(() => {
+              // Fail silently (user might have DMs disabled)
+            });
+          } catch (error) {
+            console.error('Error sending achievement notification:', error);
+          }
+        }
+      } catch (error) {
+        console.error('Error processing achievements:', error);
+        // Don't let achievement errors break the command experience
       }
     } catch (error) {
-      console.error('Error processing achievements:', error);
-      // Don't let achievement errors break the command experience
+      console.error('Error in mock command:', error);
+      return interaction.editReply({
+        content: t('errors.execution'),
+      });
     }
   },
 };

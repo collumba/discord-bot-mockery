@@ -31,6 +31,11 @@ export const BOT_CONFIG = {
       CONTEXT:
         'Generate a humorous insult for a Discord user that is edgy but not truly offensive. The insult should be creative and gaming-related. Use @USER as the placeholder for where the username will be inserted.',
     },
+    MOCK: {
+      COOLDOWN_TIME: 30 * 1000, // 30 seconds in milliseconds
+      CONTEXT:
+        'Generate a mocking, sarcastic message about how bad @USER is at gaming. The message should be playful, not truly offensive, with references to common gaming mistakes, mechanics, or stereotypes. Use @USER as the placeholder for the username.',
+    },
   },
 };
 
