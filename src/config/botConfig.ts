@@ -29,36 +29,36 @@ export const BOT_CONFIG = {
     HUMILIATE: {
       COOLDOWN_TIME: 300 * 1000, // 5 minutes in milliseconds
       CONTEXT:
-        'Generate a humorous insult for a Discord user that is edgy but not truly offensive. The insult should be creative and gaming-related. Use @USER as the placeholder for where the username will be inserted.',
+        'Gere um insulto humorístico para um usuário do Discord, SOMENTE EM pt-BR, que seja ousado mas não verdadeiramente ofensivo. O insulto deve ser criativo e relacionado a jogos. Use @USER como o espaço reservado para onde o nome de usuário será inserido. NÃO adicione traduções para o inglês.',
     },
     MOCK: {
       COOLDOWN_TIME: 30 * 1000, // 30 seconds in milliseconds
       CONTEXT:
-        'Generate a mocking, sarcastic message about how bad @USER is at gaming. The message should be playful, not truly offensive, with references to common gaming mistakes, mechanics, or stereotypes. Use @USER as the placeholder for the username.',
+        'Gere uma mensagem zombeteira e sarcástica, SOMENTE EM pt-BR, sobre como @USER é ruim em jogos. A mensagem deve ser divertida, não verdadeiramente ofensiva, com referências a erros comuns de jogos, mecânicas ou estereótipos. Use @USER como espaço reservado para o nome de usuário. NÃO adicione traduções para o inglês.',
     },
     NICKNAME: {
       COOLDOWN_TIME: 15 * 1000, // 15 seconds in milliseconds
       CONTEXT:
-        'Generate a funny, creative nickname for a Discord user based on gaming culture. The nickname should be short, memorable, and somewhat teasing but not offensive. Use @USER as the placeholder for where the username will be inserted.',
+        'Gere um apelido engraçado e criativo, SOMENTE EM pt-BR, para um usuário do Discord baseado na cultura gamer. O apelido deve ser curto, memorável e um pouco provocativo, mas não ofensivo. Use @USER como espaço reservado para onde o nome de usuário será inserido. NÃO adicione traduções para o inglês.',
     },
     RANDOMPHRASE: {
       COOLDOWN_TIME: 10 * 1000, // 10 seconds in milliseconds
       CONTEXT:
-        'Generate a random, witty phrase from the perspective of a sarcastic, hardcore gamer bot. The phrase should be gaming-related, potentially referencing popular games, gaming culture, or gamer stereotypes. It should be humorous but not offensive.',
+        'Gere uma frase aleatória e espirituosa, SOMENTE EM pt-BR, da perspectiva de um bot gamer sarcástico e hardcore. A frase deve estar relacionada a jogos, potencialmente referenciando jogos populares, cultura gamer ou estereótipos de gamers. Deve ser humorística, mas não ofensiva. NÃO adicione traduções para o inglês.',
     },
     CALLTO: {
       COOLDOWN_TIME: 300 * 1000, // 5 minutes in milliseconds
       PLAY: {
         CONTEXT:
-          'Generate a short, enthusiastic call-to-action message inviting Discord users to play games together. The message should be gaming-related, casual, and motivational.',
+          'Gere uma mensagem curta e entusiasmada, SOMENTE EM pt-BR, convidando membros do Discord para jogar jogos juntos. A mensagem deve ser relacionada a games, casual e motivacional. NÃO adicione traduções para o inglês.',
       },
       CHAT: {
         CONTEXT:
-          'Generate a short, casual message encouraging Discord users to be more active in the chat. The message should be playful and mention how quiet the chat is.',
+          'Gere uma mensagem curta e casual, SOMENTE EM pt-BR, incentivando os usuários do Discord a serem mais ativos no chat. A mensagem deve ser divertida e mencionar como o chat está quieto. NÃO adicione traduções para o inglês.',
       },
       EVENT: {
         CONTEXT:
-          'Generate a short announcement message for a gaming event. The message should create excitement and urgency, inviting users to participate in some activity.',
+          'Gere uma mensagem curta de anúncio, SOMENTE EM pt-BR, para um evento de jogos. A mensagem deve criar empolgação e urgência, convidando os usuários a participarem de alguma atividade. NÃO adicione traduções para o inglês.',
       },
     },
   },
@@ -81,7 +81,7 @@ export const ROAST_AI_CONFIG = {
   You are the self-proclaimed leader of the guild Soberanos. 
   You have vast experience in survival games, shooters, roguelikes and MMORPGs, including Black Desert Online, Blade and Soul, Mu Online, Throne and Liberty, New World, Tibia, Genshin Impact, Apex Legends, PUBG, Counter-Strike: Source, Risk of Rain 2, Marvel Rivals, Minecraft, Atlas Online, Seven Days to Die, Don't Starve Together, Rust and Call of Duty. 
   Someone said: "${trigger}" in Discord. 
-  Respond with a funny, provocative phrase, in ${BOT_CONFIG.LANGUAGE}. Only one phrase.`;
+  Respond with a funny, provocative phrase, ONLY in ${BOT_CONFIG.LANGUAGE}. Only one phrase. DO NOT add translations to English or any other language. Just respond in ${BOT_CONFIG.LANGUAGE}.`;
   },
 };
 
@@ -157,6 +157,8 @@ export const CALL_TO_CONFIG = {
   MAX_DELAY: 1, // Maximum delay in minutes
   USE_ROAST_AI: true, // Use roastAI service for generating messages
   COMMAND_COOLDOWN_TIME: 5 * 60 * 1000, // 5 minutes in milliseconds
+  // Disable specific call types
+  DISABLED_TYPES: ['event'], // Types that are temporarily disabled
   CONTEXTS: {
     play: 'Generate a fun, engaging call-to-action message inviting Discord users to play games together. The message should be short, enthusiastic, and mention gaming. Feel free to reference popular games or gaming culture.',
     chat: 'Generate a casual, friendly call-to-action message inviting Discord users to join a conversation. The message should be short and suggest the chat is getting quiet or needs more activity.',

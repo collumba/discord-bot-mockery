@@ -26,8 +26,20 @@ function getRandomDelay(): number {
  * @returns Random CallTo type
  */
 function getRandomCallToType(): 'play' | 'chat' | 'event' {
-  const types: ('play' | 'chat' | 'event')[] = ['play', 'chat', 'event'];
-  return types[Math.floor(Math.random() * types.length)];
+  const allTypes: ('play' | 'chat' | 'event')[] = ['play', 'chat', 'event'];
+
+  // Filter out disabled types
+  const availableTypes = allTypes.filter(
+    (type) => !CALL_TO_CONFIG.DISABLED_TYPES || !CALL_TO_CONFIG.DISABLED_TYPES.includes(type)
+  );
+
+  // If all types are disabled, fallback to 'chat'
+  if (availableTypes.length === 0) {
+    logger.warn('All call types are disabled, defaulting to chat');
+    return 'chat';
+  }
+
+  return availableTypes[Math.floor(Math.random() * availableTypes.length)];
 }
 
 /**

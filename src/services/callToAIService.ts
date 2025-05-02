@@ -95,6 +95,12 @@ export async function sendCallToAI(
   customText?: string
 ): Promise<boolean> {
   try {
+    // Check if this type is disabled
+    if (CALL_TO_CONFIG.DISABLED_TYPES && CALL_TO_CONFIG.DISABLED_TYPES.includes(type)) {
+      logger.warn(`Call-to-action type ${type} is currently disabled`);
+      return false;
+    }
+
     // Generate message using roastAI
     const message = await generateCallToMessage(type, customText);
 
