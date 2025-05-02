@@ -25,6 +25,13 @@ export const BOT_CONFIG = {
     ERROR: '❌',
     SUCCESS: '✅',
   },
+  COMMANDS: {
+    HUMILIATE: {
+      COOLDOWN_TIME: 300 * 1000, // 5 minutes in milliseconds
+      CONTEXT:
+        'Generate a humorous insult for a Discord user that is edgy but not truly offensive. The insult should be creative and gaming-related. Use @USER as the placeholder for where the username will be inserted.',
+    },
+  },
 };
 
 // Roast AI settings

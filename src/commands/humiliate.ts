@@ -5,6 +5,7 @@ import { isInCooldown, registerCooldown, getRemainingCooldown } from '../service
 import BOT_CONFIG from '../config/botConfig';
 import { checkAndAwardAchievements } from '../services/achievementsService';
 import { t } from '../services/i18nService';
+import { getReliableRoast } from '../services/roastAI';
 
 export default {
   data: new SlashCommandBuilder()
@@ -65,29 +66,48 @@ export default {
       });
     }
 
-    incrementUser(randomMember.user.id, interaction.guildId!);
-    registerCooldown(interaction.user.id, 'humiliate', 300); // 5 minute cooldown (300 seconds)
+    // Defer the reply since AI generation may take time
+    await interaction.deferReply();
 
-    // Get the humiliation phrases from the translation file
-    const humiliationPhrases = t('commands.humiliate.phrases').split('.,');
-
-    // Select a random phrase and replace placeholders
-    const basePhrase = humiliationPhrases[Math.floor(Math.random() * humiliationPhrases.length)];
-    const phrase = basePhrase.replace(/{username}/g, `<@${randomMember.user.id}>`);
-
-    const embed = new EmbedBuilder()
-      .setColor(BOT_CONFIG.COLORS.DEFAULT)
-      .setTitle(`${BOT_CONFIG.ICONS.HUMILIATE} ${t('commands.humiliate.title')}`)
-      .setDescription(phrase)
-      .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
-
-    await interaction.reply({ embeds: [embed] });
-
-    // Process achievements for target user
     try {
-      await checkAndAwardAchievements(randomMember.user.id, interaction.guildId!, 'mocked');
+      // Generate an AI-powered insult
+      const context = BOT_CONFIG.COMMANDS.HUMILIATE.CONTEXT.replace(
+        '@USER',
+        randomMember.displayName
+      );
+      const insult = await getReliableRoast(context);
+
+      // If AI generation failed, cancel the command
+      if (!insult) {
+        return interaction.editReply({
+          content: t('errors.execution'),
+        });
+      }
+
+      // Record the successful humiliation
+      incrementUser(randomMember.user.id, interaction.guildId!);
+      registerCooldown(interaction.user.id, 'humiliate', 300); // 5 minute cooldown (300 seconds)
+
+      // Create and send the embed with the AI-generated insult
+      const embed = new EmbedBuilder()
+        .setColor(BOT_CONFIG.COLORS.DEFAULT)
+        .setTitle(`${BOT_CONFIG.ICONS.HUMILIATE} ${t('commands.humiliate.title')}`)
+        .setDescription(insult.replace('@USER', `<@${randomMember.user.id}>`))
+        .setFooter({ text: t('footer', { botName: BOT_CONFIG.NAME }) });
+
+      await interaction.editReply({ embeds: [embed] });
+
+      // Process achievements for target user
+      try {
+        await checkAndAwardAchievements(randomMember.user.id, interaction.guildId!, 'mocked');
+      } catch (error) {
+        console.error('Error processing humiliate achievements:', error);
+      }
     } catch (error) {
-      console.error('Error processing humiliate achievements:', error);
+      console.error('Error in humiliate command:', error);
+      return interaction.editReply({
+        content: t('errors.execution'),
+      });
     }
   },
 };
