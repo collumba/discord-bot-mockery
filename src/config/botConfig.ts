@@ -32,11 +32,6 @@ export const BOT_CONFIG = {
     MIN_DELAY: 1, // Minimum delay in minutes
     MAX_DELAY: 1, // Maximum delay in minutes
   },
-
-  MESSAGE_ROASTER: {
-    COOLDOWN_TIME: 5 * 1000, // 5 seconds in milliseconds
-    ROAST_CHANCE: 1, // 100% chance to roast for each trigger
-  },
 };
 
 // Roast AI settings
@@ -106,6 +101,22 @@ export const PRESENCE_ROASTER_CONFIG = {
       CONTEXT: 'World of Warcraft é um MMORPG lendário com vastos mundos e raides épicos.',
       ROASTS: ['world_of_warcraft'],
     },
+  },
+};
+
+// Message Roaster settings
+export const MESSAGE_ROASTER_CONFIG = {
+  COOLDOWN_TIME: 5 * 1000, // 5 seconds in milliseconds
+  ROAST_CHANCE: 1, // 100% chance to roast for each trigger
+  ROAST_CONTEXTS: {
+    LONG_MESSAGE:
+      'The user wrote an extremely long message on Discord. Roast them for writing too much text in a chat app.',
+    EMOJI_SPAM:
+      'The user used too many emojis in their Discord message. Roast them for emoji spamming.',
+    ALL_CAPS:
+      "The user typed their entire Discord message in ALL CAPS. Roast them for 'shouting' in text.",
+    KEYBOARD_SMASH:
+      "The user smashed their keyboard, resulting in random gibberish like 'asdfghjkl' or 'kkkkkkkk'. Roast them for keyboard smashing.",
   },
 };
 

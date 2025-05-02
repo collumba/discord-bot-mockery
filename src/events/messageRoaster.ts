@@ -1,32 +1,36 @@
-import { Client, Events, Message } from 'discord.js';
+import { Events, Message } from 'discord.js';
 import logger from '../utils/logger';
-import { t } from '../services/i18nService';
-import BOT_CONFIG from '../config/botConfig';
+import { MESSAGE_ROASTER_CONFIG } from '../config/botConfig';
+import { getReliableRoast } from '../services/roastAI';
 
 // Store recent roasts to prevent spamming the same user
 const userCooldowns = new Map<string, number>();
-// const COOLDOWN_TIME = 2 * 60 * 1000; // 2 minutes in milliseconds
-const COOLDOWN_TIME = BOT_CONFIG.MESSAGE_ROASTER.COOLDOWN_TIME; // 5 seconds in milliseconds
-// const ROAST_CHANCE = 0.2; // 20% chance to roast for each trigger
-const ROAST_CHANCE = BOT_CONFIG.MESSAGE_ROASTER.ROAST_CHANCE; // 100% chance to roast for each trigger
+const COOLDOWN_TIME = MESSAGE_ROASTER_CONFIG.COOLDOWN_TIME; // 5 seconds in milliseconds
+const ROAST_CHANCE = MESSAGE_ROASTER_CONFIG.ROAST_CHANCE; // 100% chance to roast for each trigger
 
 // Types of roasts available
 type RoastType = 'LONG_MESSAGE' | 'EMOJI_SPAM' | 'ALL_CAPS' | 'KEYBOARD_SMASH';
 
 /**
- * Gets a random roast from the i18n service
+ * Gets a roast using AI
  * @param roastType Type of roast
- * @returns Random roast phrase
+ * @param username Username to mention in the roast
+ * @returns Promise with a roast message or null if generation failed
  */
-function getRandomRoast(roastType: RoastType): string {
-  // Get the array of roasts from i18n
-  const roastsStr = t(`services.messageRoaster.${roastType}`);
+async function getRoast(roastType: RoastType, username: string): Promise<string | null> {
+  try {
+    // Get context for this roast type from config
+    const context = `${username} ${MESSAGE_ROASTER_CONFIG.ROAST_CONTEXTS[roastType]}`;
 
-  // If we get a single string, split it on commas (in case the translation comes as a single string)
-  const roasts = Array.isArray(roastsStr) ? roastsStr : roastsStr.split('.,');
-
-  // Get a random item
-  return roasts[Math.floor(Math.random() * roasts.length)];
+    // Get a dynamic roast from the AI service
+    return await getReliableRoast(context);
+  } catch (error) {
+    logger.error(
+      `Error getting AI roast: ${error instanceof Error ? error.message : String(error)}`
+    );
+    // Return null to indicate failure - the command will be canceled
+    return null;
+  }
 }
 
 /**
@@ -56,7 +60,7 @@ function isKeyboardSmash(text: string): boolean {
 /**
  * Process a message and decide whether to roast the author
  */
-function processMessage(message: Message): void {
+async function processMessage(message: Message): Promise<void> {
   try {
     // Security check
     if (!message || !message.author || !message.content) {
@@ -113,7 +117,15 @@ function processMessage(message: Message): void {
       logger.debug(`Preparing to roast with type: ${roastType}`);
 
       try {
-        const roast = getRandomRoast(roastType);
+        // Get a roast using AI
+        const roast = await getRoast(roastType, author.username);
+
+        // If AI failed to generate a roast, cancel the command
+        if (!roast) {
+          logger.debug(`AI failed to generate a roast. Command canceled.`);
+          return;
+        }
+
         logger.debug(`Selected roast: "${roast}"`);
 
         // Apply cooldown
@@ -168,7 +180,7 @@ function cleanupCooldowns(): void {
 export const name = Events.MessageCreate;
 export const once = false;
 
-export function execute(message: Message) {
+export async function execute(message: Message) {
   try {
     // Log the raw message for debugging
     logger.debug(
@@ -223,7 +235,7 @@ export function execute(message: Message) {
     );
 
     // Process the message for potential roasting
-    processMessage(message);
+    await processMessage(message);
   } catch (error) {
     logger.error(
       'Error in message roaster:',
