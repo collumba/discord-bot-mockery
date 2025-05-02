@@ -25,45 +25,45 @@ export const BOT_CONFIG = {
     ERROR: '❌',
     SUCCESS: '✅',
   },
-  COMMANDS: {
-    HUMILIATE: {
-      COOLDOWN_TIME: 10 * 1000, // 10 seconds in milliseconds
+};
+
+export const COMMANDS_CONFIG = {
+  HUMILIATE: {
+    COOLDOWN_TIME: 10 * 1000, // 10 seconds in milliseconds
+    CONTEXT:
+      'Gere um insulto humorístico para um usuário do Discord, SOMENTE EM pt-BR, que seja ousado mas não verdadeiramente ofensivo. O insulto deve ser criativo e relacionado a jogos. Use @USER como o espaço reservado para onde o nome de usuário será inserido.',
+  },
+  MOCK: {
+    COOLDOWN_TIME: 30 * 1000, // 30 seconds in milliseconds
+    CONTEXT:
+      'Gere uma mensagem zombeteira e sarcástica, SOMENTE EM pt-BR, sobre como @USER é ruim em jogos. A mensagem deve ser divertida, não verdadeiramente ofensiva, com referências a erros comuns de jogos, mecânicas ou estereótipos. Use @USER como espaço reservado para o nome de usuário.',
+  },
+  NICKNAME: {
+    COOLDOWN_TIME: 15 * 1000, // 15 seconds in milliseconds
+    CONTEXT:
+      'Gere um apelido engraçado e criativo, SOMENTE EM pt-BR, para um usuário do Discord baseado na cultura gamer. O apelido deve ser curto, memorável e um pouco provocativo, mas não ofensivo. Use @USER como espaço reservado para onde o nome de usuário será inserido.',
+  },
+  RANDOMPHRASE: {
+    COOLDOWN_TIME: 10 * 1000, // 10 seconds in milliseconds
+    CONTEXT:
+      'Gere uma frase aleatória e espirituosa, SOMENTE EM pt-BR, da perspectiva de um bot gamer sarcástico e hardcore. A frase deve estar relacionada a jogos, potencialmente referenciando jogos populares, cultura gamer ou estereótipos de gamers. Deve ser humorística, mas não ofensiva.',
+  },
+  CALLTO: {
+    COOLDOWN_TIME: 300 * 1000, // 5 minutes in milliseconds
+    PLAY: {
       CONTEXT:
-        'Gere um insulto humorístico para um usuário do Discord, SOMENTE EM pt-BR, que seja ousado mas não verdadeiramente ofensivo. O insulto deve ser criativo e relacionado a jogos. Use @USER como o espaço reservado para onde o nome de usuário será inserido.',
+        'Gere uma mensagem curta e entusiasmada, SOMENTE EM pt-BR, convidando membros do Discord para jogar jogos juntos. A mensagem deve ser relacionada a games, casual e motivacional.',
     },
-    MOCK: {
-      COOLDOWN_TIME: 30 * 1000, // 30 seconds in milliseconds
+    CHAT: {
       CONTEXT:
-        'Gere uma mensagem zombeteira e sarcástica, SOMENTE EM pt-BR, sobre como @USER é ruim em jogos. A mensagem deve ser divertida, não verdadeiramente ofensiva, com referências a erros comuns de jogos, mecânicas ou estereótipos. Use @USER como espaço reservado para o nome de usuário.',
+        'Gere uma mensagem curta e casual, SOMENTE EM pt-BR, incentivando os usuários do Discord a serem mais ativos no chat. A mensagem deve ser divertida e mencionar como o chat está quieto.',
     },
-    NICKNAME: {
-      COOLDOWN_TIME: 15 * 1000, // 15 seconds in milliseconds
+    EVENT: {
       CONTEXT:
-        'Gere um apelido engraçado e criativo, SOMENTE EM pt-BR, para um usuário do Discord baseado na cultura gamer. O apelido deve ser curto, memorável e um pouco provocativo, mas não ofensivo. Use @USER como espaço reservado para onde o nome de usuário será inserido.',
-    },
-    RANDOMPHRASE: {
-      COOLDOWN_TIME: 10 * 1000, // 10 seconds in milliseconds
-      CONTEXT:
-        'Gere uma frase aleatória e espirituosa, SOMENTE EM pt-BR, da perspectiva de um bot gamer sarcástico e hardcore. A frase deve estar relacionada a jogos, potencialmente referenciando jogos populares, cultura gamer ou estereótipos de gamers. Deve ser humorística, mas não ofensiva.',
-    },
-    CALLTO: {
-      COOLDOWN_TIME: 300 * 1000, // 5 minutes in milliseconds
-      PLAY: {
-        CONTEXT:
-          'Gere uma mensagem curta e entusiasmada, SOMENTE EM pt-BR, convidando membros do Discord para jogar jogos juntos. A mensagem deve ser relacionada a games, casual e motivacional.',
-      },
-      CHAT: {
-        CONTEXT:
-          'Gere uma mensagem curta e casual, SOMENTE EM pt-BR, incentivando os usuários do Discord a serem mais ativos no chat. A mensagem deve ser divertida e mencionar como o chat está quieto.',
-      },
-      EVENT: {
-        CONTEXT:
-          'Gere uma mensagem curta de anúncio, SOMENTE EM pt-BR, para um evento de jogos. A mensagem deve criar empolgação e urgência, convidando os usuários a participarem de alguma atividade.',
-      },
+        'Gere uma mensagem curta de anúncio, SOMENTE EM pt-BR, para um evento de jogos. A mensagem deve criar empolgação e urgência, convidando os usuários a participarem de alguma atividade.',
     },
   },
 };
-
 // Roast AI settings
 export const ROAST_AI_CONFIG = {
   MAX_TOKENS: 512,

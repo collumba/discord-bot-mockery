@@ -2,7 +2,7 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from '
 import { incrementUser } from '../services/rankingService';
 import { canExecute } from '../utils/canExecuteCommand';
 import { isInCooldown, registerCooldown, getRemainingCooldown } from '../services/cooldownService';
-import BOT_CONFIG from '../config/botConfig';
+import BOT_CONFIG, { COMMANDS_CONFIG } from '../config/botConfig';
 import { checkAndAwardAchievements } from '../services/achievementsService';
 import { t } from '../services/i18nService';
 import { getReliableRoast } from '../services/roastAI';
@@ -71,10 +71,7 @@ export default {
 
     try {
       // Generate an AI-powered insult
-      const context = BOT_CONFIG.COMMANDS.HUMILIATE.CONTEXT.replace(
-        '@USER',
-        randomMember.displayName
-      );
+      const context = COMMANDS_CONFIG.HUMILIATE.CONTEXT.replace('@USER', randomMember.displayName);
       const insult = await getReliableRoast(context);
 
       // If AI generation failed, cancel the command

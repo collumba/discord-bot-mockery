@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { incrementUser } from '../services/rankingService';
-import BOT_CONFIG from '../config/botConfig';
+import BOT_CONFIG, { COMMANDS_CONFIG } from '../config/botConfig';
 import { t } from '../services/i18nService';
 import CommandHandler from '../utils/commandHandler';
 import AchievementHandler from '../utils/achievementHandler';
@@ -57,7 +57,7 @@ export default {
       CommandHandler.applyCooldown(
         interaction.user.id,
         'nickname',
-        BOT_CONFIG.COMMANDS.NICKNAME.COOLDOWN_TIME / 1000
+        COMMANDS_CONFIG.NICKNAME.COOLDOWN_TIME / 1000
       );
       incrementUser(user.id, interaction.guildId!, interaction.user.id, 'nickname');
 

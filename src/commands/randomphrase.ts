@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
-import BOT_CONFIG from '../config/botConfig';
+import BOT_CONFIG, { COMMANDS_CONFIG } from '../config/botConfig';
 import { t } from '../services/i18nService';
 import CommandHandler from '../utils/commandHandler';
 
@@ -33,7 +33,7 @@ export default {
       CommandHandler.applyCooldown(
         interaction.user.id,
         'randomphrase',
-        BOT_CONFIG.COMMANDS.RANDOMPHRASE.COOLDOWN_TIME / 1000
+        COMMANDS_CONFIG.RANDOMPHRASE.COOLDOWN_TIME / 1000
       );
 
       // Create embed with the AI-generated phrase with a proper title
